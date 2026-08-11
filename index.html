@@ -97,6 +97,72 @@
     flex-direction: column;
   }
 
+  /* ---------- Email gate ---------- */
+
+  .rf-gate {
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .rf-gate-heading {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--plum-dark);
+    margin: 0;
+  }
+
+  .rf-gate-copy {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .rf-gate-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .rf-gate-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Lora', serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: white;
+  }
+  .rf-gate-input:focus { outline: none; border-color: var(--plum); }
+
+  .rf-gate-submit {
+    background: var(--plum);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .rf-gate-submit:hover { background: var(--plum-dark); }
+  .rf-gate-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .rf-gate-status {
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 1em;
+  }
+  .rf-gate-status.error { color: #a3403a; }
+  .rf-gate-status.info { color: var(--plum-dark); }
+
   /* ---------- Welcome / Check-in screen ---------- */
 
   .rf-welcome {
@@ -965,10 +1031,19 @@
   </div>
 
   <div class="app-tab-panel active" id="panel-chat">
+    <div class="rf-gate" id="rf-gate">
+      <p class="rf-gate-heading">Get access to the chat</p>
+      <p class="rf-gate-copy">Enter your email to unlock the chat. You'll also get occasional updates from Redefine Family — unsubscribe anytime.</p>
+      <form class="rf-gate-form" id="rf-gate-form">
+        <input type="email" class="rf-gate-input" id="rf-gate-email" placeholder="you@example.com" autocomplete="email" required>
+        <button type="submit" class="rf-gate-submit" id="rf-gate-submit">Unlock chat</button>
+      </form>
+      <p class="rf-gate-status" id="rf-gate-status"></p>
+    </div>
     <div class="rf-progress rf-hidden" id="rf-progress">
     <span class="rf-progress-label">Your journey:</span>
   </div>
-    <div class="rf-body" id="rf-body">
+    <div class="rf-body rf-hidden" id="rf-body">
 
     <!-- ---------- STEP 1: FEELINGS CHECK-IN ---------- -->
     <div class="rf-welcome" id="rf-step1">
@@ -1087,11 +1162,89 @@
   const checklistEl = document.getElementById('rf-checklist');
   const pathsEl = document.getElementById('rf-paths');
   const progressEl = document.getElementById('rf-progress');
+  const rfBodyEl = document.getElementById('rf-body');
+  const gateEl = document.getElementById('rf-gate');
+  const gateFormEl = document.getElementById('rf-gate-form');
+  const gateEmailEl = document.getElementById('rf-gate-email');
+  const gateSubmitBtn = document.getElementById('rf-gate-submit');
+  const gateStatusEl = document.getElementById('rf-gate-status');
 
   // In-memory only — intentionally not persisted across sessions
   let conversation = [];
   let selectedFeelings = [];
   let currentContext = 'default';
+
+  // ---- Email gate ----
+  // Access is enforced server-side on every chat request (see worker.js) —
+  // this local check is just so a returning visitor with a stored email
+  // doesn't have to re-enter it every page load.
+  const EMAIL_STORAGE_KEY = 'rf_subscriber_email';
+
+  function getStoredEmail() {
+    return localStorage.getItem(EMAIL_STORAGE_KEY) || '';
+  }
+
+  function unlockApp() {
+    gateEl.classList.add('rf-hidden');
+    rfBodyEl.classList.remove('rf-hidden');
+  }
+
+  function relockApp(message) {
+    localStorage.removeItem(EMAIL_STORAGE_KEY);
+    rfBodyEl.classList.add('rf-hidden');
+    gateEl.classList.remove('rf-hidden');
+    setGateStatus(message || '', 'error');
+  }
+
+  function setGateStatus(message, kind) {
+    gateStatusEl.textContent = message;
+    gateStatusEl.className = 'rf-gate-status' + (kind ? ' ' + kind : '');
+  }
+
+  gateFormEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = gateEmailEl.value.trim().toLowerCase();
+    if (!email) return;
+
+    gateSubmitBtn.disabled = true;
+    setGateStatus('Checking…', 'info');
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'subscribe', email }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setGateStatus(data.error || "Something went wrong — please try again.", 'error');
+        return;
+      }
+
+      if (data.verified) {
+        localStorage.setItem(EMAIL_STORAGE_KEY, email);
+        setGateStatus('', null);
+        unlockApp();
+      } else if (data.pending) {
+        setGateStatus("Almost there — check your inbox and confirm your email, then come back and enter it again.", 'info');
+      } else {
+        setGateStatus("Couldn't verify that email — please try again.", 'error');
+      }
+    } catch (err) {
+      setGateStatus("Something went wrong connecting. Please check your connection and try again.", 'error');
+      console.error(err);
+    } finally {
+      gateSubmitBtn.disabled = false;
+    }
+  });
+
+  // Optimistically unlock for a returning visitor with a stored email —
+  // the Worker still verifies it for real on the first chat message, and
+  // relockApp() reopens the gate if that check fails.
+  if (getStoredEmail()) {
+    unlockApp();
+  }
 
   // ---- 8 Ways progress tracker ----
   const EIGHT_WAYS = [
@@ -1449,6 +1602,12 @@
   async function sendMessage(text) {
     if (!text || !text.trim()) return;
 
+    const email = getStoredEmail();
+    if (!email) {
+      relockApp('Please enter your email to unlock the chat.');
+      return;
+    }
+
     addMessage('user', text);
     conversation.push({ role: 'user', content: text });
     inputEl.value = '';
@@ -1461,11 +1620,17 @@
       const response = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversation }),
+        body: JSON.stringify({ messages: conversation, email }),
       });
 
       const data = await response.json();
       hideTyping();
+
+      if (response.status === 403) {
+        conversation.pop();
+        relockApp("Your email couldn't be verified — please sign up again.");
+        return;
+      }
 
       if (!response.ok) {
         addMessage('crystal', "I'm having trouble connecting right now. Please try again in a moment.");
