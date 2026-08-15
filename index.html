@@ -705,6 +705,25 @@
   .wb-tactic-table td:first-child { font-weight: 600; color: var(--plum-dark); white-space: nowrap; }
   .wb-tactic-table tr:nth-child(even) td { background: var(--cream); }
 
+  /* ---------- Expandable checklist (checkbox + per-item note) ---------- */
+  .wb-expand-item { border: 1.5px solid var(--border); border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+  .wb-expand-item.checked { border-color: var(--sage); }
+  .wb-expand-item-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: white; }
+  .wb-expand-item.checked .wb-expand-item-row { background: var(--sage-light); }
+  .wb-expand-item-row input[type="checkbox"] { flex-shrink: 0; }
+  .wb-expand-item-row span { flex: 1; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+  .wb-expand-toggle {
+    background: none; border: none; color: var(--plum); font-size: 12px; font-weight: 600;
+    cursor: pointer; padding: 4px 8px; border-radius: 6px; flex-shrink: 0; white-space: nowrap;
+  }
+  .wb-expand-toggle:hover { background: var(--plum-light); }
+  .wb-expand-note-wrap { display: none; padding: 0 14px 12px 14px; background: white; }
+  .wb-expand-item.open .wb-expand-note-wrap { display: block; }
+  .wb-expand-note-wrap textarea {
+    width: 100%; min-height: 70px; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; font-family: 'Lora', serif; font-size: 13.5px; color: var(--ink); resize: vertical;
+  }
+
   .wb-prompt-checkbox-label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; margin-bottom: 8px; }
   .wb-prompt-checkbox-label input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
   .wb-prompt-checkbox-label span { font-weight: 600; font-size: 14.5px; color: var(--plum-dark); line-height: 1.4; }
@@ -1845,7 +1864,7 @@
       </div>
       <div class="wb-note">Adapted with permission · Domestic Abuse Intervention Programs (theduluthmodel.org) · 202 East Superior Street, Duluth, MN 55802 · 218-722-2781</div>`,
       prompts: [
-        { id: 'pcw_check', label: 'Check any tactics you recognize from your own experience:', type: 'checklist', options: [
+        { id: 'pcw_check', label: 'Check any tactics you recognize from your own experience — click a tactic to open a space and write about it:', type: 'expand_checklist', options: [
           'Coercion & Threats',
           'Intimidation',
           'Emotional Abuse',
@@ -1855,7 +1874,7 @@
           'Using Children',
           'Minimizing, Denying & Blaming'
         ]},
-        { id: 'pcw_1', label: 'Say more about the ones you checked, or anything else that comes up:', type: 'textarea', big: true }
+        { id: 'pcw_1', label: 'Anything else that comes up, connecting these patterns together?', type: 'textarea', big: true }
       ]
     },
     {
@@ -2066,6 +2085,9 @@
         if (p.type === 'checkbox_note') {
           try { const s = JSON.parse(val); return s.checked || (s.text && s.text.trim().length > 0); } catch (e) { return false; }
         }
+        if (p.type === 'expand_checklist') {
+          try { const s = JSON.parse(val); return Object.values(s).some(e => e.checked || (e.note && e.note.trim().length > 0)); } catch (e) { return false; }
+        }
         return val.trim().length > 0;
       });
       if (i < currentStep && (step.prompts.length === 0 || stepHasAnswers)) dot.classList.add('done');
@@ -2083,6 +2105,31 @@
     html += `<div class="wb-teaching">${step.teaching}</div>`;
 
     step.prompts.forEach(p => {
+      if (p.type === 'expand_checklist') {
+        let stored = {};
+        try { stored = answers[p.id] ? JSON.parse(answers[p.id]) : {}; } catch (e) { stored = {}; }
+        html += `<div class="wb-prompt">
+          <label>${p.label}</label>
+          <div class="wb-expand-field" data-field="${p.id}">`;
+        p.options.forEach((opt, i) => {
+          const entry = stored[opt] || { checked: false, note: '' };
+          const openClass = entry.checked ? ' open' : '';
+          html += `<div class="wb-expand-item${entry.checked ? ' checked' : ''}${openClass}" data-option="${escapeHtml(opt)}">
+            <div class="wb-expand-item-row">
+              <input type="checkbox" data-expand-box ${entry.checked ? 'checked' : ''}>
+              <span data-expand-label>${escapeHtml(opt)}</span>
+              <button type="button" class="wb-expand-toggle" data-expand-toggle>${entry.checked ? 'Hide notes' : 'Add notes'}</button>
+            </div>
+            <div class="wb-expand-note-wrap">
+              <textarea data-expand-note placeholder="Say more about this one...">${escapeHtml(entry.note)}</textarea>
+            </div>
+          </div>`;
+        });
+        html += `</div>
+          <div class="wb-saved-indicator" id="saved-${p.id}">Saved ✓</div>
+        </div>`;
+        return;
+      }
       if (p.type === 'checklist') {
         let checked = [];
         try { checked = answers[p.id] ? JSON.parse(answers[p.id]) : []; } catch (e) { checked = []; }
@@ -2158,6 +2205,56 @@
       };
       boxEl.addEventListener('change', persist);
       textEl.addEventListener('input', persist);
+    });
+
+    bodyEl.querySelectorAll('.wb-expand-field').forEach(fieldEl => {
+      const id = fieldEl.dataset.field;
+      const readStored = () => {
+        let stored = {};
+        try { stored = answers[id] ? JSON.parse(answers[id]) : {}; } catch (e) { stored = {}; }
+        return stored;
+      };
+      const persist = (stored) => {
+        answers[id] = JSON.stringify(stored);
+        saveAnswers();
+        const indicator = document.getElementById('saved-' + id);
+        if (indicator) {
+          indicator.classList.add('show');
+          clearTimeout(indicator._timeout);
+          indicator._timeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+        }
+        updateProgressBar();
+      };
+      fieldEl.querySelectorAll('.wb-expand-item').forEach(itemEl => {
+        const opt = itemEl.dataset.option;
+        const boxEl = itemEl.querySelector('[data-expand-box]');
+        const noteEl = itemEl.querySelector('[data-expand-note]');
+        const toggleBtn = itemEl.querySelector('[data-expand-toggle]');
+        const labelEl = itemEl.querySelector('[data-expand-label]');
+
+        boxEl.addEventListener('change', () => {
+          itemEl.classList.toggle('checked', boxEl.checked);
+          itemEl.classList.toggle('open', boxEl.checked);
+          toggleBtn.textContent = itemEl.classList.contains('open') ? 'Hide notes' : 'Add notes';
+          const stored = readStored();
+          stored[opt] = { checked: boxEl.checked, note: noteEl.value };
+          persist(stored);
+          if (boxEl.checked) noteEl.focus();
+        });
+
+        const toggleOpen = () => {
+          itemEl.classList.toggle('open');
+          toggleBtn.textContent = itemEl.classList.contains('open') ? 'Hide notes' : 'Add notes';
+        };
+        toggleBtn.addEventListener('click', toggleOpen);
+        labelEl.addEventListener('click', toggleOpen);
+
+        noteEl.addEventListener('input', () => {
+          const stored = readStored();
+          stored[opt] = { checked: boxEl.checked, note: noteEl.value };
+          persist(stored);
+        });
+      });
     });
 
     bodyEl.querySelectorAll('.wb-checklist-field').forEach(fieldEl => {
@@ -2254,6 +2351,16 @@
             html += `<div class="wb-print-a">${box} ${escapeHtml(stored.text)}</div>`;
           } else {
             html += `<div class="wb-print-a wb-print-empty">${box} (not yet answered)</div>`;
+          }
+        } else if (p.type === 'expand_checklist') {
+          let stored = {};
+          try { stored = answers[p.id] ? JSON.parse(answers[p.id]) : {}; } catch (e) { stored = {}; }
+          const entries = Object.entries(stored).filter(([, e]) => e.checked || (e.note && e.note.trim().length > 0));
+          if (entries.length > 0) {
+            html += '<div class="wb-print-a"><ul class="wb-print-check-list">' +
+              entries.map(([opt, e]) => `<li>${e.checked ? '☑' : '☐'} ${escapeHtml(opt)}${e.note && e.note.trim() ? ' — ' + escapeHtml(e.note) : ''}</li>`).join('') + '</ul></div>';
+          } else {
+            html += `<div class="wb-print-a wb-print-empty">(none checked)</div>`;
           }
         } else {
           const val = answers[p.id];
