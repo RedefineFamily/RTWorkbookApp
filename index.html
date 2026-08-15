@@ -1787,7 +1787,7 @@
       <p style="font-style:italic;">Winell traces these symptoms to authoritarian environments that limit independent thought and self-trust from an early age.</p>
       <div class="wb-note">Source: Journey Free — <a href="https://www.journeyfree.org/rts/" target="_blank" rel="noopener" style="color:var(--plum-dark);">journeyfree.org/rts</a></div>`,
       prompts: [
-        { id: 'rts_check', label: 'Check any symptoms you recognize in yourself:', type: 'checklist', options: [
+        { id: 'rts_check', label: 'Check any symptoms you recognize in yourself — click one to open a space and write about it:', type: 'expand_checklist', options: [
           'Black-and-white thinking, trouble seeing middle ground',
           'Self-doubt, trouble deciding or trusting your own judgment',
           'Anxiety, panic, or dread tied to old religious triggers',
@@ -1882,7 +1882,7 @@
       teaching: `<p>For many, including myself, I did not believe that church teachings were harmful until I was an adult. When we live in dysfunctional environments, we don't know anything different.</p>
       <p>Psychologist Edmund Bourne's <em>The Anxiety and Phobia Workbook</em> identifies four personality traits that keep anxiety going: perfectionism, an excessive need for approval, ignoring the body's signs of stress, and an excessive need for control. High-demand religions often teach several of these without ever naming them that way. Worthiness interviews, purity culture, and constant cycles of confession and repentance can quietly train "good enough is never enough." Needing approval from leadership or community can get fused with needing approval from God. And handing over control of major life decisions to religious authority can leave someone without practice trusting their own judgment. Recognizing these as taught patterns — not personal failings — is often a relief on its own.</p>`,
       prompts: [
-        { id: 'deconstruct_check', label: 'Check any categories of harmful belief that resonate with your experience:', type: 'checklist', options: [
+        { id: 'deconstruct_check', label: 'Check any categories of harmful belief that resonate with your experience — click one to open a space and write about it:', type: 'expand_checklist', options: [
           'Patriarchal beliefs (do not question male authority)',
           'Rigid gender roles (women stay home; men lead)',
           'Education framed as a fallback rather than a goal in itself',
@@ -1983,14 +1983,14 @@
       id: 'support', label: '6', title: 'Find Support Groups',
       teaching: `<p>Support can be informal or formal — both have value, and many people benefit from a combination of both. Check any that you'd like to look into:</p>`,
       prompts: [
-        { id: 'sup_informal', label: 'Informal', type: 'checklist', options: [
+        { id: 'sup_informal', label: 'Informal — click one to open a space and write about it:', type: 'expand_checklist', options: [
           'Peer-led or online communities (e.g., Facebook groups)',
           '12-Step programs (AA / NA / CA / OA)',
           'Al-Anon / Nar-Anon / Alateen',
           'Adult Children of Alcoholics and Dysfunctional Families',
           'Traditional and secular recovery groups'
         ]},
-        { id: 'sup_formal', label: 'Formal', type: 'checklist', options: [
+        { id: 'sup_formal', label: 'Formal — click one to open a space and write about it:', type: 'expand_checklist', options: [
           'Therapist-led groups',
           'Psychotherapy groups, often time-limited',
           'Telehealth or in-person options',
