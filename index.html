@@ -1149,7 +1149,7 @@
           <span class="rf-path-text"><strong>I need grounding right now</strong><span>A quick technique to calm down</span></span>
         </button>
         <button class="rf-path-card" data-context="journal" data-path="I'd like a journal prompt to reflect on.">
-          <span class="rf-path-emoji">✍️</span>
+          <span class="rf-path-emoji">📔</span>
           <span class="rf-path-text"><strong>Give me a journal prompt</strong><span>Something to sit with and reflect on</span></span>
         </button>
         <button class="rf-path-card" data-context="alone" data-path="I feel so alone in this. Does anyone else understand what I've been through?">
@@ -1361,14 +1361,14 @@
     start: [
       { label: '🌊 What should I acknowledge first?', msg: "What's the first thing I should acknowledge about what happened to me?" },
       { label: '📖 Recommend a book', msg: 'Can you recommend a book for where I am right now?' },
-      { label: '✍️ Give me a journal prompt', msg: 'Can you give me a journal prompt to start with?' },
+      { label: '🖋️ Give me a journal prompt', msg: 'Can you give me a journal prompt to start with?' },
       { label: '🧘 Help me ground', msg: 'Can you help me ground myself?' },
     ],
     book: [
       { label: '💬 Tell me more', msg: 'Can you tell me more about that?' },
       { label: '🎙️ Any podcasts?', msg: 'Are there any podcasts you\'d recommend too?' },
       { label: '🫂 What about community?', msg: 'What about finding community support?' },
-      { label: '✍️ Give me a journal prompt', msg: 'Can you give me a journal prompt too?' },
+      { label: '📓 Give me a journal prompt', msg: 'Can you give me a journal prompt too?' },
     ],
     ground: [
       { label: '🧘 What else can I try?', msg: 'That helped a bit. What else can I try?' },
@@ -1377,7 +1377,7 @@
       { label: '💛 I feel calmer now', msg: 'I feel a little calmer now. What should I do next?' },
     ],
     journal: [
-      { label: '✍️ Give me another prompt', msg: 'Can you give me another journal prompt?' },
+      { label: '🪶 Give me another prompt', msg: 'Can you give me another journal prompt?' },
       { label: '💬 Talk through my answer', msg: "I want to talk through what came up for me." },
       { label: '📖 Recommend a book', msg: 'Can you recommend a book related to this?' },
       { label: '🧘 Help me ground', msg: 'Can you help me ground myself?' },
@@ -2118,7 +2118,7 @@
             <div class="wb-expand-item-row">
               <input type="checkbox" data-expand-box ${entry.checked ? 'checked' : ''}>
               <span data-expand-label>${escapeHtml(opt)}</span>
-              <button type="button" class="wb-expand-toggle" data-expand-toggle>${entry.checked ? 'Hide notes' : 'Add notes'}</button>
+              <button type="button" class="wb-expand-toggle" data-expand-toggle>${entry.checked ? '💭 Hide notes' : '💭 Add notes'}</button>
             </div>
             <div class="wb-expand-note-wrap">
               <textarea data-expand-note placeholder="Say more about this one...">${escapeHtml(entry.note)}</textarea>
@@ -2235,7 +2235,7 @@
         boxEl.addEventListener('change', () => {
           itemEl.classList.toggle('checked', boxEl.checked);
           itemEl.classList.toggle('open', boxEl.checked);
-          toggleBtn.textContent = itemEl.classList.contains('open') ? 'Hide notes' : 'Add notes';
+          toggleBtn.textContent = itemEl.classList.contains('open') ? '💭 Hide notes' : '💭 Add notes';
           const stored = readStored();
           stored[opt] = { checked: boxEl.checked, note: noteEl.value };
           persist(stored);
@@ -2244,7 +2244,7 @@
 
         const toggleOpen = () => {
           itemEl.classList.toggle('open');
-          toggleBtn.textContent = itemEl.classList.contains('open') ? 'Hide notes' : 'Add notes';
+          toggleBtn.textContent = itemEl.classList.contains('open') ? '💭 Hide notes' : '💭 Add notes';
         };
         toggleBtn.addEventListener('click', toggleOpen);
         labelEl.addEventListener('click', toggleOpen);
