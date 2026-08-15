@@ -1725,7 +1725,17 @@
     {
       id: 'acknowledge', label: '1', title: 'Acknowledge the Trauma',
       teaching: `<p>When we are in an unhealthy relationship, it is challenging to see the dysfunction. As a child in the Mormon faith, I was unaware of the patriarchal beliefs and high demands the church had on the family. When we grow up in dysfunction, we don't know any different. This was normal.</p>
-      <div class="wb-note">It's common for religious harm to show up first as shame, anxiety, or self-doubt — without ever connecting those feelings back to where they came from. Therapist Chris Tompkins, LMFT, writes about this in Psychology Today; naming the source is often the first real step, whether or not you decide to change your relationship with faith itself.</div>`,
+      <p>Therapist Chris Tompkins, LMFT, writes in Psychology Today about why religious harm so often goes unrecognized as trauma: people usually describe it as shame, anxiety, or self-doubt, not as "trauma" — so the connection to where it came from never gets made. It rarely takes an extreme or obviously abusive environment; harm can live inside everyday, even loving-sounding conversations and messaging. Tompkins offers a few questions worth sitting with, whether or not you ever land on the word "trauma" for your own experience:</p>
+      <ul>
+        <li>Have you felt judged, singled out, or pressured to be someone you weren't in religious settings?</li>
+        <li>Did you suppress your actual beliefs to avoid conflict, punishment, or losing relationships?</li>
+        <li>Did religious leaders dismiss your feelings of harm, or encourage you to stay in unsafe situations?</li>
+        <li>Do certain religious words, places, people, or symbols trigger physical anxiety, anger, or shutdown?</li>
+        <li>Do religious memories surface quickly, or feel hard to release?</li>
+        <li>Were you taught not to trust your body, feelings, sexuality, or personal judgment?</li>
+      </ul>
+      <div class="wb-note">Healing doesn't require rejecting your entire religious past — you can keep what's genuinely meaningful to you while releasing what was harmful.</div>
+      <div class="wb-note">Source: Chris Tompkins, LMFT — <a href="https://www.psychologytoday.com/us/blog/lgbtq-affirmative-psychology/202601/why-religious-harm-isnt-always-recognized-as-trauma" target="_blank" rel="noopener" style="color:var(--plum-dark);">"Why Religious Harm Isn't Always Recognized as Trauma," Psychology Today</a></div>`,
       prompts: [
         { id: 'ack_1', label: 'What did you think was normal in childhood that you now recognize as harmful?', type: 'textarea' }
       ]
@@ -1734,10 +1744,10 @@
       id: 'bite', label: '1b', title: 'The BITE Model',
       teaching: `<p>Dr. Steven Hassan, a cult expert, created the BITE Model to explain the techniques authoritarian systems use to gain and maintain control:</p>
       <div class="wb-concept-grid">
-        <div class="wb-concept-card"><strong>Behavior</strong><span>Controlling what you do, who you see, where you go</span></div>
-        <div class="wb-concept-card"><strong>Information</strong><span>Controlling what you're allowed to read, hear, or learn</span></div>
-        <div class="wb-concept-card"><strong>Thought</strong><span>Teaching you what's permitted to even think or question</span></div>
-        <div class="wb-concept-card"><strong>Emotion</strong><span>Using guilt, fear, or shame to keep you in line</span></div>
+        <div class="wb-concept-card"><strong>Behavior</strong><span>Controlling what you do, who you see, where you go — e.g. dress codes, approved friend groups, dating/marriage rules, mandatory attendance at services</span></div>
+        <div class="wb-concept-card"><strong>Information</strong><span>Controlling what you're allowed to read, hear, or learn — e.g. banned books or media, "faithful" history only, discouraging outside research</span></div>
+        <div class="wb-concept-card"><strong>Thought</strong><span>Teaching you what's permitted to even think or question — e.g. doubt framed as sin, black-and-white "us vs. them" thinking, thought-stopping phrases like "just have more faith"</span></div>
+        <div class="wb-concept-card"><strong>Emotion</strong><span>Using guilt, fear, or shame to keep you in line — e.g. fear of hell or punishment, guilt for questioning, shame around sexuality or doubt</span></div>
       </div>`,
       prompts: [
         { id: 'bite_behavior', label: 'Behavior:', type: 'textarea' },
@@ -1750,15 +1760,25 @@
       id: 'rts', label: '1c', title: 'Religious Trauma Syndrome',
       teaching: `<p>Psychologist Marlene Winell coined the term Religious Trauma Syndrome. In brief, it tends to show up in four areas:</p>
       <div class="wb-concept-grid">
-        <div class="wb-concept-card"><strong>Cognitive</strong><span>Black-and-white thinking, self-doubt, trouble deciding</span></div>
-        <div class="wb-concept-card"><strong>Emotional</strong><span>Anxiety, depression, grief, loss of meaning</span></div>
-        <div class="wb-concept-card"><strong>Social</strong><span>Strained relationships, isolation, feeling behind</span></div>
-        <div class="wb-concept-card"><strong>Cultural</strong><span>Feeling like an outsider in the secular world</span></div>
+        <div class="wb-concept-card"><strong>Cognitive</strong><span>Black-and-white thinking, self-doubt, trouble deciding — e.g. everything feels either "right" or "wrong" with no middle ground, second-guessing simple choices</span></div>
+        <div class="wb-concept-card"><strong>Emotional</strong><span>Anxiety, depression, grief, loss of meaning — e.g. panic around old religious triggers, grieving the community or certainty you left behind</span></div>
+        <div class="wb-concept-card"><strong>Social</strong><span>Strained relationships, isolation, feeling behind — e.g. family relationships strained by leaving, missing social milestones peers had</span></div>
+        <div class="wb-concept-card"><strong>Cultural</strong><span>Feeling like an outsider in the secular world — e.g. not knowing pop-culture references, unfamiliar with dating or social norms outside the religion</span></div>
       </div>
       <p style="font-style:italic;">Winell traces these symptoms to authoritarian environments that limit independent thought and self-trust from an early age.</p>
       <div class="wb-note">Source: Journey Free — <a href="https://www.journeyfree.org/rts/" target="_blank" rel="noopener" style="color:var(--plum-dark);">journeyfree.org/rts</a></div>`,
       prompts: [
-        { id: 'rts_1', label: 'How have you experienced symptoms of Religious Trauma Syndrome?', type: 'textarea', big: true }
+        { id: 'rts_check', label: 'Check any symptoms you recognize in yourself:', type: 'checklist', options: [
+          'Black-and-white thinking, trouble seeing middle ground',
+          'Self-doubt, trouble deciding or trusting your own judgment',
+          'Anxiety, panic, or dread tied to old religious triggers',
+          'Depression or a sense of loss of meaning',
+          'Grief for the community, certainty, or identity you left behind',
+          'Strained or broken relationships with family or former community',
+          'Isolation, or feeling behind on things peers experienced',
+          'Feeling like an outsider or "fish out of water" in the secular world'
+        ]},
+        { id: 'rts_1', label: 'Say more about the ones you checked, or how you have experienced Religious Trauma Syndrome:', type: 'textarea', big: true }
       ]
     },
     {
@@ -1841,7 +1861,7 @@
     {
       id: 'deconstruct', label: '2', title: 'Deconstruct Harmful Beliefs',
       teaching: `<p>For many, including myself, I did not believe that church teachings were harmful until I was an adult. When we live in dysfunctional environments, we don't know anything different.</p>
-      <div class="wb-note">Psychologist Edmund Bourne's <em>The Anxiety and Phobia Workbook</em> names perfectionism as one of several personality traits that keep anxiety going. High-demand religions often teach perfectionism without ever naming it that way — worthiness interviews, purity culture, constant confession and repentance cycles can all quietly train "good enough is never enough." Recognizing perfectionism as a taught pattern, not a personal failing, is often a relief on its own.</div>`,
+      <p>Psychologist Edmund Bourne's <em>The Anxiety and Phobia Workbook</em> identifies four personality traits that keep anxiety going: perfectionism, an excessive need for approval, ignoring the body's signs of stress, and an excessive need for control. High-demand religions often teach several of these without ever naming them that way. Worthiness interviews, purity culture, and constant cycles of confession and repentance can quietly train "good enough is never enough." Needing approval from leadership or community can get fused with needing approval from God. And handing over control of major life decisions to religious authority can leave someone without practice trusting their own judgment. Recognizing these as taught patterns — not personal failings — is often a relief on its own.</p>`,
       prompts: [
         { id: 'deconstruct_check', label: 'Check any categories of harmful belief that resonate with your experience:', type: 'checklist', options: [
           'Patriarchal beliefs (do not question male authority)',
@@ -1858,7 +1878,8 @@
     {
       id: 'selfcompassion', label: '3', title: 'Develop Self-Compassion',
       teaching: `<p style="font-style:italic;">"There is no courage without vulnerability." — Brené Brown</p>
-      <div class="wb-note">A mindfulness practice can help self-compassion feel less like an idea and more like something you can actually do. <strong>Jon Kabat-Zinn's <em>Wherever You Go, There You Are</em></strong> is a good secular starting point — especially if meditation or stillness got tangled up with performance or fear in your religious background. Try this: for one minute, notice the weight of your body where you're sitting, one sound around you, and your breath moving — without trying to change any of it. That's the whole practice.</div>
+      <p>A mindfulness practice can help self-compassion feel less like an idea and more like something you can actually do. <strong>Jon Kabat-Zinn's <em>Wherever You Go, There You Are</em></strong> is a good secular starting point — especially if meditation or stillness got tangled up with performance or fear in your religious background. Mindfulness, in his sense, isn't about clearing your mind or feeling calm — it's paying attention on purpose, to whatever's actually here right now, without judging it. Try this for one minute: notice the weight of your body where you're sitting, one sound around you, and your breath moving — without trying to change any of it. That's the whole practice.</p>
+      <p>Another tool worth having available: <strong>EFT (Emotional Freedom Techniques), also called Tapping</strong>. You tap with your fingertips on a sequence of specific points on the face and body while naming the feeling out loud — something like "even though I feel [anxious/ashamed], I deeply and completely accept myself." It's a simple, body-based way to work with shame or panic directly rather than just thinking your way through it. The points, in order:</p>
       <div class="wb-wheel-wrap">
         <svg class="wb-eft-diagram" viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg">
           <path d="M120,195 C80,205 55,235 55,270 L55,340 Q55,350 65,350 L245,350 Q255,350 255,340 L255,270 C255,235 230,205 190,195 Z" fill="var(--sage-light)" stroke="var(--plum)" stroke-width="2"/>
@@ -1891,7 +1912,7 @@
           <li><span class="wb-eft-num">7</span>Collarbone</li>
           <li><span class="wb-eft-num">8</span>Under arm</li>
         </ol>
-        <p class="wb-wheel-caption">EFT / Tapping: gently tap each point with your fingertips while naming the feeling out loud — "even though I feel [anxious/ashamed], I deeply and completely accept myself."</p>
+        <p class="wb-wheel-caption">Tap each point gently in order while repeating your phrase, then check in with yourself before moving to the next.</p>
       </div>`,
       prompts: [
         { id: 'sc_1', label: 'I can show compassion to myself by:', type: 'textarea' },
@@ -1904,7 +1925,7 @@
     {
       id: 'boundaries', label: '4', title: 'Establish Boundaries',
       teaching: `<p><strong>Boundaries</strong> are your own limitations — "I don't answer texts after 8pm." <strong>Rules</strong> are what you enforce on others — "Don't call me after 8pm." Journal about what each of these terms means to you:</p>
-      <div class="wb-note">If boundaries come up most around a relationship or marriage, <strong>Dr. Sue Johnson's <em>Hold Me Tight: Seven Conversations for a Lifetime of Love</em></strong> is worth a look — it introduces Emotionally Focused Therapy (EFT), which focuses on rebuilding safe emotional connection rather than "winning" conflicts.</div>`,
+      <p>If boundary struggles show up most inside a relationship or marriage, <strong>Dr. Sue Johnson's <em>Hold Me Tight: Seven Conversations for a Lifetime of Love</em></strong> is worth a look. It introduces <strong>Emotionally Focused Therapy</strong> — a different "EFT" from the tapping technique mentioned elsewhere in this workbook — which treats a relationship as an attachment bond and focuses on rebuilding safe emotional connection between partners, rather than on "winning" arguments. For many people, boundary work and attachment work are the same work: you often can't hold a boundary with someone until you trust that the relationship can survive you having one.</p>`,
       prompts: [
         { id: 'b_comm', label: 'Communication Skills', type: 'textarea' },
         { id: 'b_phys', label: 'Physical Boundaries', type: 'textarea' },
@@ -1926,9 +1947,10 @@
     },
     {
       id: 'attachment', label: '5b', title: 'Attachment Theory',
-      teaching: `<p>Drawing on the work of John Bowlby and Mary Ainsworth, consider these questions about your childhood attachment:</p>
-      <div class="wb-note">It's okay if you didn't develop a secure attachment style as a child — many of us didn't. Through therapy, it's possible to build what's sometimes called an earned secure attachment.</div>
-      <div class="wb-note">If you're a parent yourself, <strong>Dan Siegel &amp; Mary Hartzell's <em>Parenting from the Inside Out</em></strong> connects your own attachment history to how you parent your own kids — a way to break a cycle rather than just understand it.</div>`,
+      teaching: `<p>John Bowlby and Mary Ainsworth's attachment theory describes how a child's early relationship with caregivers shapes their adult sense of safety, trust, and connection. Ainsworth's research described a few broad patterns: <strong>secure</strong> (needs were reliably met, so the world and relationships feel basically safe), <strong>anxious</strong> (caregiving was inconsistent, so closeness gets chased and reassurance is hard to trust), <strong>avoidant</strong> (needs went unmet often enough that self-reliance felt safer than depending on anyone), and <strong>disorganized</strong> (the caregiver was both a source of comfort and a source of fear, so there's no consistent strategy for getting needs met). High-control religious environments can produce any of these — a God or authority figure who is loving one moment and punishing the next teaches the same nervous-system lesson as a caregiver who does.</p>
+      <div class="wb-note">It's okay if you didn't develop a secure attachment style as a child — many of us didn't. Through therapy, it's possible to build what's sometimes called an <strong>earned secure attachment</strong>: not erasing your history, but building enough new, consistent experience that safety and trust become believable.</div>
+      <div class="wb-note">If you're a parent yourself, <strong>Dan Siegel &amp; Mary Hartzell's <em>Parenting from the Inside Out</em></strong> connects your own attachment history to how you parent your own kids — a way to break a cycle rather than just understand it.</div>
+      <p>A few questions about your own childhood attachment:</p>`,
       prompts: [
         { id: 'a_1', label: 'Did I get my needs met?', type: 'checkbox_note' },
         { id: 'a_2', label: 'Was I taught to explore my world safely?', type: 'checkbox_note' },
