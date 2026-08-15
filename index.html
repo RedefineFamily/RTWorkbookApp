@@ -670,6 +670,45 @@
     margin-top: 10px;
   }
 
+  /* ---------- Wheel diagram (Power and Control) ---------- */
+  .wb-wheel-wrap { display: flex; flex-direction: column; align-items: center; margin: 4px 0 18px 0; }
+  .wb-wheel-diagram { width: 100%; max-width: 340px; height: auto; }
+  .wb-wheel-diagram text {
+    font-family: 'Lora', serif; fill: #ffffff;
+    paint-order: stroke; stroke: rgba(43, 34, 48, 0.45); stroke-width: 3px; stroke-linejoin: round;
+  }
+  .wb-wheel-diagram .wb-wheel-hub-text { font-weight: 600; font-size: 15px; }
+  .wb-wheel-diagram .wb-wheel-label { font-size: 11px; font-weight: 600; }
+  .wb-wheel-caption { font-size: 12px; color: var(--ink-soft); text-align: center; max-width: 320px; margin-top: 8px; font-style: italic; }
+
+  /* ---------- EFT tapping points diagram ---------- */
+  .wb-eft-diagram { width: 100%; max-width: 260px; height: auto; }
+  .wb-eft-legend { list-style: none; margin: 10px 0 0 0; padding: 0; font-size: 12.5px; color: var(--ink); columns: 2; column-gap: 16px; }
+  .wb-eft-legend li { margin-bottom: 5px; break-inside: avoid; }
+  .wb-eft-legend .wb-eft-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%; background: var(--gold); color: white;
+    font-size: 10px; font-weight: 700; margin-right: 5px;
+  }
+
+  /* ---------- Concept card grid ---------- */
+  .wb-concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0; }
+  .wb-concept-card { background: var(--sage-light); border-radius: 12px; padding: 12px 14px; }
+  .wb-concept-card strong { display: block; color: var(--plum-dark); font-family: 'Fraunces', serif; font-weight: 500; font-size: 13.5px; margin-bottom: 3px; }
+  .wb-concept-card span { font-size: 13px; color: var(--ink); line-height: 1.4; }
+
+  /* ---------- Tactic table (Power and Control Wheel detail) ---------- */
+  .wb-tactic-table-wrap { overflow-x: auto; margin: 8px 0 18px 0; }
+  .wb-tactic-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 480px; }
+  .wb-tactic-table th { background: var(--plum); color: white; text-align: left; padding: 8px 10px; font-weight: 600; font-size: 12px; }
+  .wb-tactic-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
+  .wb-tactic-table td:first-child { font-weight: 600; color: var(--plum-dark); white-space: nowrap; }
+  .wb-tactic-table tr:nth-child(even) td { background: var(--cream); }
+
+  .wb-prompt-checkbox-label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; margin-bottom: 8px; }
+  .wb-prompt-checkbox-label input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+  .wb-prompt-checkbox-label span { font-weight: 600; font-size: 14.5px; color: var(--plum-dark); line-height: 1.4; }
+
   .wb-prompt { margin-bottom: 20px; }
   .wb-prompt label {
     display: block;
@@ -1685,14 +1724,21 @@
     },
     {
       id: 'acknowledge', label: '1', title: 'Acknowledge the Trauma',
-      teaching: `<p>When we are in an unhealthy relationship, it is challenging to see the dysfunction. As a child in the Mormon faith, I was unaware of the patriarchal beliefs and high demands the church had on the family. When we grow up in dysfunction, we don't know any different. This was normal.</p>`,
+      teaching: `<p>When we are in an unhealthy relationship, it is challenging to see the dysfunction. As a child in the Mormon faith, I was unaware of the patriarchal beliefs and high demands the church had on the family. When we grow up in dysfunction, we don't know any different. This was normal.</p>
+      <div class="wb-note">It's common for religious harm to show up first as shame, anxiety, or self-doubt — without ever connecting those feelings back to where they came from. Therapist Chris Tompkins, LMFT, writes about this in Psychology Today; naming the source is often the first real step, whether or not you decide to change your relationship with faith itself.</div>`,
       prompts: [
         { id: 'ack_1', label: 'What did you think was normal in childhood that you now recognize as harmful?', type: 'textarea' }
       ]
     },
     {
       id: 'bite', label: '1b', title: 'The BITE Model',
-      teaching: `<p>Dr. Steven Hassan, a cult expert, created the BITE Model to explain authoritative control techniques: <strong>B</strong>ehavior, <strong>I</strong>nformation, <strong>T</strong>hought, and <strong>E</strong>motional control.</p>`,
+      teaching: `<p>Dr. Steven Hassan, a cult expert, created the BITE Model to explain the techniques authoritarian systems use to gain and maintain control:</p>
+      <div class="wb-concept-grid">
+        <div class="wb-concept-card"><strong>Behavior</strong><span>Controlling what you do, who you see, where you go</span></div>
+        <div class="wb-concept-card"><strong>Information</strong><span>Controlling what you're allowed to read, hear, or learn</span></div>
+        <div class="wb-concept-card"><strong>Thought</strong><span>Teaching you what's permitted to even think or question</span></div>
+        <div class="wb-concept-card"><strong>Emotion</strong><span>Using guilt, fear, or shame to keep you in line</span></div>
+      </div>`,
       prompts: [
         { id: 'bite_behavior', label: 'Behavior:', type: 'textarea' },
         { id: 'bite_information', label: 'Information:', type: 'textarea' },
@@ -1702,56 +1748,163 @@
     },
     {
       id: 'rts', label: '1c', title: 'Religious Trauma Syndrome',
-      teaching: `<p>Marlene Winell's Religious Trauma Syndrome (RTS) describes symptoms that can show up cognitively, emotionally, socially, and culturally after leaving a high-control religious environment — things like confusion, black-and-white thinking, anxiety, grief, loss of social network, and feeling like a "fish out of water" in the secular world.</p>
-      <div class="wb-note">Read more at <a href="https://www.journeyfree.org/rts/" target="_blank" rel="noopener" style="color:var(--plum-dark);">journeyfree.org/rts</a></div>`,
+      teaching: `<p>Psychologist Marlene Winell coined the term Religious Trauma Syndrome. In brief, it tends to show up in four areas:</p>
+      <div class="wb-concept-grid">
+        <div class="wb-concept-card"><strong>Cognitive</strong><span>Black-and-white thinking, self-doubt, trouble deciding</span></div>
+        <div class="wb-concept-card"><strong>Emotional</strong><span>Anxiety, depression, grief, loss of meaning</span></div>
+        <div class="wb-concept-card"><strong>Social</strong><span>Strained relationships, isolation, feeling behind</span></div>
+        <div class="wb-concept-card"><strong>Cultural</strong><span>Feeling like an outsider in the secular world</span></div>
+      </div>
+      <p style="font-style:italic;">Winell traces these symptoms to authoritarian environments that limit independent thought and self-trust from an early age.</p>
+      <div class="wb-note">Source: Journey Free — <a href="https://www.journeyfree.org/rts/" target="_blank" rel="noopener" style="color:var(--plum-dark);">journeyfree.org/rts</a></div>`,
       prompts: [
-        { id: 'rts_1', label: 'Explain how you have experienced symptoms of Religious Trauma Syndrome:', type: 'textarea', big: true }
+        { id: 'rts_1', label: 'How have you experienced symptoms of Religious Trauma Syndrome?', type: 'textarea', big: true }
       ]
     },
     {
       id: 'pcw', label: '1d', title: 'Power and Control Wheel',
-      teaching: `<p>When we are in an unhealthy relationship, it is difficult to see that we are experiencing abuse. The Duluth Model identifies characteristics of an abuser and behaviors in a domestic violence relationship. This wheel has been adapted, with permission from the Duluth Model (DAIP), to show how these same patterns can show up in religious institutions and relationships — for example, "tell the Bishop" as a threat, or invoking scripture to avoid accountability.</p>`,
+      teaching: `<p>When we're inside an unhealthy relationship or system, it can be difficult to recognize that what we're experiencing is a form of abuse. The Duluth Model's Power and Control Wheel identifies characteristics and behaviors common in abusive relationships. It has been adapted, with permission from the Duluth Model, to illustrate how these same dynamics can show up in religious institutions and beliefs. Physical and sexual violence often sits at the center, holding the other tactics together.</p>
+      <div class="wb-wheel-wrap">
+        <svg class="wb-wheel-diagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="200" r="192" fill="none" stroke="var(--gold)" stroke-width="5"/>
+          <path d="M200,15 A185,185 0 0 1 330.8,69.2 L260.1,139.9 A85,85 0 0 0 200,115 Z" fill="#5B3A5C"/>
+          <path d="M330.8,69.2 A185,185 0 0 1 385,200 L285,200 A85,85 0 0 0 260.1,139.9 Z" fill="#7A4F7B"/>
+          <path d="M385,200 A185,185 0 0 1 330.8,330.8 L260.1,260.1 A85,85 0 0 0 285,200 Z" fill="#432B45"/>
+          <path d="M330.8,330.8 A185,185 0 0 1 200,385 L200,285 A85,85 0 0 0 260.1,260.1 Z" fill="#8FA382"/>
+          <path d="M200,385 A185,185 0 0 1 69.2,330.8 L139.9,260.1 A85,85 0 0 0 200,285 Z" fill="#6C8560"/>
+          <path d="M69.2,330.8 A185,185 0 0 1 15,200 L115,200 A85,85 0 0 0 139.9,260.1 Z" fill="#C9A24B"/>
+          <path d="M15,200 A185,185 0 0 1 69.2,69.2 L139.9,139.9 A85,85 0 0 0 115,200 Z" fill="#A9823A"/>
+          <path d="M69.2,69.2 A185,185 0 0 1 200,15 L200,115 A85,85 0 0 0 139.9,139.9 Z" fill="#6b5f6c"/>
+          <circle cx="200" cy="200" r="85" fill="var(--ink)"/>
+          <text x="200" y="200" text-anchor="middle" class="wb-wheel-hub-text">
+            <tspan x="200" dy="-4">POWER &amp;</tspan>
+            <tspan x="200" dy="18">CONTROL</tspan>
+          </text>
+          <text x="251.7" y="75.3" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="251.7" dy="-4">Coercion &amp;</tspan>
+            <tspan x="251.7" dy="13">Threats</tspan>
+          </text>
+          <text x="324.7" y="148.3" text-anchor="middle" dy="4" class="wb-wheel-label">Intimidation</text>
+          <text x="324.7" y="251.7" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="324.7" dy="-4">Emotional</tspan>
+            <tspan x="324.7" dy="13">Abuse</tspan>
+          </text>
+          <text x="251.7" y="324.7" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="251.7" dy="-4">Economic</tspan>
+            <tspan x="251.7" dy="13">Abuse</tspan>
+          </text>
+          <text x="148.3" y="324.7" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="148.3" dy="-4">Male</tspan>
+            <tspan x="148.3" dy="13">Privilege</tspan>
+          </text>
+          <text x="75.3" y="251.7" text-anchor="middle" dy="4" class="wb-wheel-label">Isolation</text>
+          <text x="75.3" y="148.3" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="75.3" dy="-4">Using</tspan>
+            <tspan x="75.3" dy="13">Children</tspan>
+          </text>
+          <text x="148.3" y="75.3" text-anchor="middle" class="wb-wheel-label">
+            <tspan x="148.3" dy="-13">Minimizing,</tspan>
+            <tspan x="148.3" dy="13">Denying &amp;</tspan>
+            <tspan x="148.3" dy="13">Blaming</tspan>
+          </text>
+        </svg>
+        <p class="wb-wheel-caption">Outer ring: physical &amp; sexual violence — often what anchors and enables the tactics inside it.</p>
+      </div>
+      <div class="wb-tactic-table-wrap">
+        <table class="wb-tactic-table">
+          <tr><th>Tactic</th><th>In an Abusive Relationship</th><th>In a Religious Context</th></tr>
+          <tr><td>Coercion &amp; Threats</td><td>Threatening harm, self-harm, or to leave. Threatening to report to authorities. Coercing illegal acts.</td><td>Threatening to damage her reputation with church leadership. Threats of divorce. Limiting contact to church-approved figures.</td></tr>
+          <tr><td>Intimidation</td><td>Instilling fear through actions or looks. Destroying property. Displaying weapons.</td><td>Blaming her for family problems as spiritual failure. Accusing her of being influenced by evil or "listening to Satan."</td></tr>
+          <tr><td>Emotional Abuse</td><td>Name-calling, put-downs, mind games, humiliation, manufactured guilt.</td><td>Questioning her commitment to God. Framing family problems as her spiritual failing. Accusations of unfaithfulness.</td></tr>
+          <tr><td>Economic Abuse</td><td>Controlling money, requiring her to ask for funds, blocking employment.</td><td>Restricting outside employment because "the man is the provider." Withholding financial information because "the woman should submit."</td></tr>
+          <tr><td>Male Privilege</td><td>Treating her as a servant, making all major decisions, defining gender roles unilaterally.</td><td>Declaring wives must submit in all matters. Positioning himself as the conduit of God's word. Controlling her appearance and choices.</td></tr>
+          <tr><td>Isolation</td><td>Controlling who she sees, what she reads, where she goes. Using jealousy to justify control.</td><td>Enlisting church leaders to pressure her into compliance. Forbidding her from attending the church of her choice.</td></tr>
+          <tr><td>Using Children</td><td>Creating guilt about the children. Using visitation to harass. Threatening custody.</td><td>Blaming her for children's struggles. Telling children their mother is unfaithful or won't reach heaven.</td></tr>
+          <tr><td>Minimizing, Denying &amp; Blaming</td><td>Dismissing the abuse, denying it happened, shifting responsibility.</td><td>Invoking scripture to avoid accountability. Insisting she must forgive. Shifting blame to her spiritual shortcomings or to Satan.</td></tr>
+        </table>
+      </div>
+      <div class="wb-note">Adapted with permission · Domestic Abuse Intervention Programs (theduluthmodel.org) · 202 East Superior Street, Duluth, MN 55802 · 218-722-2781</div>`,
       prompts: [
-        { id: 'pcw_check', label: 'Check any patterns you recognize from your own experience:', type: 'checklist', options: [
-          'Coercion or threats (e.g. "tell the Bishop," threats of shunning)',
+        { id: 'pcw_check', label: 'Check any tactics you recognize from your own experience:', type: 'checklist', options: [
+          'Coercion & Threats',
           'Intimidation',
-          'Emotional abuse (shame, guilt)',
-          'Economic abuse (control over tithing or finances)',
-          'Using isolation (cutting off from doubters or outsiders)',
-          'Using children (children used as leverage)',
-          'Minimizing, denying, or blaming (invoking scripture to avoid accountability)'
+          'Emotional Abuse',
+          'Economic Abuse',
+          'Male Privilege',
+          'Isolation',
+          'Using Children',
+          'Minimizing, Denying & Blaming'
         ]},
         { id: 'pcw_1', label: 'Say more about the ones you checked, or anything else that comes up:', type: 'textarea', big: true }
       ]
     },
     {
       id: 'deconstruct', label: '2', title: 'Deconstruct Harmful Beliefs',
-      teaching: `<p>For many, including myself, I did not believe that church teachings were harmful until I was an adult. When we live in dysfunctional environments, we don't know anything different.</p>`,
+      teaching: `<p>For many, including myself, I did not believe that church teachings were harmful until I was an adult. When we live in dysfunctional environments, we don't know anything different.</p>
+      <div class="wb-note">Psychologist Edmund Bourne's <em>The Anxiety and Phobia Workbook</em> names perfectionism as one of several personality traits that keep anxiety going. High-demand religions often teach perfectionism without ever naming it that way — worthiness interviews, purity culture, constant confession and repentance cycles can all quietly train "good enough is never enough." Recognizing perfectionism as a taught pattern, not a personal failing, is often a relief on its own.</div>`,
       prompts: [
-        { id: 'deconstruct_check', label: 'Check any beliefs you absorbed growing up:', type: 'checklist', options: [
-          'Patriarchal beliefs (do not question men)',
-          'Rigid gender roles',
-          'Education viewed only as a backup plan',
-          'Homophobia',
-          'Racism',
-          "Suppression of critical thinking (\"don't question the doctrine\")"
+        { id: 'deconstruct_check', label: 'Check any categories of harmful belief that resonate with your experience:', type: 'checklist', options: [
+          'Patriarchal beliefs (do not question male authority)',
+          'Rigid gender roles (women stay home; men lead)',
+          'Education framed as a fallback rather than a goal in itself',
+          'Homophobia and other prejudice taught as doctrine',
+          'Racism embedded in religious teaching',
+          'Suppression of critical thinking (questioning treated as sin)',
+          'Perfectionism (never "good enough," constant self-monitoring)'
         ]},
         { id: 'deconstruct_1', label: "Which of these are you working to release, and what's replacing them?", type: 'textarea', big: true }
       ]
     },
     {
       id: 'selfcompassion', label: '3', title: 'Develop Self-Compassion',
-      teaching: ``,
+      teaching: `<p style="font-style:italic;">"There is no courage without vulnerability." — Brené Brown</p>
+      <div class="wb-note">A mindfulness practice can help self-compassion feel less like an idea and more like something you can actually do. <strong>Jon Kabat-Zinn's <em>Wherever You Go, There You Are</em></strong> is a good secular starting point — especially if meditation or stillness got tangled up with performance or fear in your religious background. Try this: for one minute, notice the weight of your body where you're sitting, one sound around you, and your breath moving — without trying to change any of it. That's the whole practice.</div>
+      <div class="wb-wheel-wrap">
+        <svg class="wb-eft-diagram" viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg">
+          <path d="M120,195 C80,205 55,235 55,270 L55,340 Q55,350 65,350 L245,350 Q255,350 255,340 L255,270 C255,235 230,205 190,195 Z" fill="var(--sage-light)" stroke="var(--plum)" stroke-width="2"/>
+          <rect x="135" y="170" width="40" height="35" fill="var(--sage-light)" stroke="var(--plum)" stroke-width="2"/>
+          <ellipse cx="150" cy="115" rx="62" ry="72" fill="var(--sage-light)" stroke="var(--plum)" stroke-width="2"/>
+          <path d="M112,95 Q125,86 140,93" fill="none" stroke="var(--plum-dark)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M160,93 Q175,86 188,95" fill="none" stroke="var(--plum-dark)" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse cx="126" cy="108" rx="11" ry="6" fill="none" stroke="var(--plum-dark)" stroke-width="2"/>
+          <ellipse cx="174" cy="108" rx="11" ry="6" fill="none" stroke="var(--plum-dark)" stroke-width="2"/>
+          <path d="M150,110 L146,135 Q150,140 154,135" fill="none" stroke="var(--plum-dark)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M133,158 Q150,166 167,158" fill="none" stroke="var(--plum-dark)" stroke-width="2" stroke-linecap="round"/>
+          <g font-family="'Lora', serif" font-size="13" font-weight="700" fill="#ffffff">
+            <circle cx="150" cy="45" r="11" fill="var(--gold)"/><text x="150" y="45" text-anchor="middle" dy="4">1</text>
+            <circle cx="112" cy="82" r="11" fill="var(--gold)"/><text x="112" y="82" text-anchor="middle" dy="4">2</text>
+            <circle cx="197" cy="103" r="11" fill="var(--gold)"/><text x="197" y="103" text-anchor="middle" dy="4">3</text>
+            <circle cx="115" cy="122" r="11" fill="var(--gold)"/><text x="115" y="122" text-anchor="middle" dy="4">4</text>
+            <circle cx="150" cy="140" r="11" fill="var(--gold)"/><text x="150" y="140" text-anchor="middle" dy="4">5</text>
+            <circle cx="150" cy="182" r="11" fill="var(--gold)"/><text x="150" y="182" text-anchor="middle" dy="4">6</text>
+            <circle cx="130" cy="222" r="11" fill="var(--gold)"/><text x="130" y="222" text-anchor="middle" dy="4">7</text>
+            <circle cx="235" cy="270" r="11" fill="var(--gold)"/><text x="235" y="270" text-anchor="middle" dy="4">8</text>
+          </g>
+        </svg>
+        <ol class="wb-eft-legend">
+          <li><span class="wb-eft-num">1</span>Top of head</li>
+          <li><span class="wb-eft-num">2</span>Eyebrow</li>
+          <li><span class="wb-eft-num">3</span>Side of eye</li>
+          <li><span class="wb-eft-num">4</span>Under eye</li>
+          <li><span class="wb-eft-num">5</span>Under nose</li>
+          <li><span class="wb-eft-num">6</span>Chin</li>
+          <li><span class="wb-eft-num">7</span>Collarbone</li>
+          <li><span class="wb-eft-num">8</span>Under arm</li>
+        </ol>
+        <p class="wb-wheel-caption">EFT / Tapping: gently tap each point with your fingertips while naming the feeling out loud — "even though I feel [anxious/ashamed], I deeply and completely accept myself."</p>
+      </div>`,
       prompts: [
         { id: 'sc_1', label: 'I can show compassion to myself by:', type: 'textarea' },
         { id: 'sc_2', label: 'I am worthy of:', type: 'textarea' },
         { id: 'sc_3', label: 'I can show self-compassion toward sexual shame:', type: 'textarea' },
+        { id: 'sc_mindful', label: 'After trying the mindful noticing or tapping above, what did you notice — in your body, or in your mind?', type: 'textarea' },
         { id: 'sc_4', label: 'Write a supportive letter to your younger self, affirming their worth and autonomy.', type: 'textarea', big: true }
       ]
     },
     {
       id: 'boundaries', label: '4', title: 'Establish Boundaries',
-      teaching: `<p><strong>Boundaries</strong> are your own limitations — "I don't answer texts after 8pm." <strong>Rules</strong> are what you enforce on others — "Don't call me after 8pm." Journal about what each of these terms means to you:</p>`,
+      teaching: `<p><strong>Boundaries</strong> are your own limitations — "I don't answer texts after 8pm." <strong>Rules</strong> are what you enforce on others — "Don't call me after 8pm." Journal about what each of these terms means to you:</p>
+      <div class="wb-note">If boundaries come up most around a relationship or marriage, <strong>Dr. Sue Johnson's <em>Hold Me Tight: Seven Conversations for a Lifetime of Love</em></strong> is worth a look — it introduces Emotionally Focused Therapy (EFT), which focuses on rebuilding safe emotional connection rather than "winning" conflicts.</div>`,
       prompts: [
         { id: 'b_comm', label: 'Communication Skills', type: 'textarea' },
         { id: 'b_phys', label: 'Physical Boundaries', type: 'textarea' },
@@ -1761,56 +1914,74 @@
     },
     {
       id: 'therapy', label: '5', title: 'Therapy',
-      teaching: `<p>A few reflection questions to bring with you into therapy, or to sit with on your own:</p>`,
+      teaching: `<p>Therapy is one of the most effective tools for processing religious trauma. It might take time to find the right fit — that's normal, and it doesn't mean the process isn't working. Check off each reflection as you sit with it:</p>
+      <div class="wb-note">Ready to look for a therapist? Visit <a href="https://redefinefam.com" target="_blank" rel="noopener" style="color:var(--plum-dark);">redefinefam.com</a> for the religious trauma therapist directory (created by Anna Clark Miller, LPC-S, LMHC-S, NCC) — searchable by location, specialty, insurance, and religious background. <strong>Headway</strong> (headway.co) is another good option for finding a therapist who takes insurance.</div>`,
       prompts: [
-        { id: 't_1', label: 'Write down your earliest memory of when you felt safe.', type: 'textarea' },
-        { id: 't_2', label: 'Who was with you?', type: 'textarea' },
-        { id: 't_3', label: 'What routines did you have?', type: 'textarea' },
-        { id: 't_4', label: 'Was there a person you felt safe with in childhood?', type: 'textarea' },
-        { id: 't_5', label: 'What changed when your sense of safety disappeared?', type: 'textarea' }
+        { id: 't_1', label: 'Write down your earliest memory of feeling safe.', type: 'checkbox_note' },
+        { id: 't_2', label: 'Who was with you?', type: 'checkbox_note' },
+        { id: 't_3', label: 'What routines did you have?', type: 'checkbox_note' },
+        { id: 't_4', label: 'Was there a person you felt safe with in childhood?', type: 'checkbox_note' },
+        { id: 't_5', label: 'What changed when your sense of safety disappeared?', type: 'checkbox_note' }
       ]
     },
     {
       id: 'attachment', label: '5b', title: 'Attachment Theory',
-      teaching: `<p>Building on the work of John Bowlby and Mary Ainsworth — some questions about secure attachment in childhood:</p>`,
+      teaching: `<p>Drawing on the work of John Bowlby and Mary Ainsworth, consider these questions about your childhood attachment:</p>
+      <div class="wb-note">It's okay if you didn't develop a secure attachment style as a child — many of us didn't. Through therapy, it's possible to build what's sometimes called an earned secure attachment.</div>
+      <div class="wb-note">If you're a parent yourself, <strong>Dan Siegel &amp; Mary Hartzell's <em>Parenting from the Inside Out</em></strong> connects your own attachment history to how you parent your own kids — a way to break a cycle rather than just understand it.</div>`,
       prompts: [
-        { id: 'a_1', label: 'Did I get my needs met?', type: 'textarea' },
-        { id: 'a_2', label: 'Was I taught to explore my world?', type: 'textarea' },
-        { id: 'a_3', label: 'Was I told that the world was dangerous?', type: 'textarea' },
-        { id: 'a_4', label: 'Did I feel safe at home?', type: 'textarea' },
-        { id: 'a_5', label: 'Was I comforted when I cried?', type: 'textarea' },
-        { id: 'a_6', label: 'What did your younger self need from you?', type: 'textarea', big: true }
+        { id: 'a_1', label: 'Did I get my needs met?', type: 'checkbox_note' },
+        { id: 'a_2', label: 'Was I taught to explore my world safely?', type: 'checkbox_note' },
+        { id: 'a_3', label: 'Was I told the world was dangerous?', type: 'checkbox_note' },
+        { id: 'a_4', label: 'Did I feel safe at home?', type: 'checkbox_note' },
+        { id: 'a_5', label: 'Was I comforted when I cried?', type: 'checkbox_note' },
+        { id: 'a_6', label: 'What did your younger self need from you that they didn’t receive?', type: 'textarea', big: true }
       ]
     },
     {
       id: 'support', label: '6', title: 'Find Support Groups',
-      teaching: `<p><strong>Informal support</strong> includes things like Facebook groups, peer-led groups, and 12-step programs (AA/NA/CA/OA, Al-Anon/Nar-Anon/Alateen, ACA — Adult Children of Alcoholics and Dysfunctional Families), both traditional and secular. <strong>Formal support</strong> includes therapist-led psychotherapy groups, which can be time-limited or ongoing, telehealth or in-person.</p>`,
+      teaching: `<p>Support can be informal or formal — both have value, and many people benefit from a combination of both. Check any that you'd like to look into:</p>`,
       prompts: [
+        { id: 'sup_informal', label: 'Informal', type: 'checklist', options: [
+          'Peer-led or online communities (e.g., Facebook groups)',
+          '12-Step programs (AA / NA / CA / OA)',
+          'Al-Anon / Nar-Anon / Alateen',
+          'Adult Children of Alcoholics and Dysfunctional Families',
+          'Traditional and secular recovery groups'
+        ]},
+        { id: 'sup_formal', label: 'Formal', type: 'checklist', options: [
+          'Therapist-led groups',
+          'Psychotherapy groups, often time-limited',
+          'Telehealth or in-person options',
+          'National Alliance on Mental Illness (NAMI) support groups'
+        ]},
         { id: 'sup_1', label: 'Which kind of support feels most accessible or appealing to you right now, and why?', type: 'textarea', big: true }
       ]
     },
     {
       id: 'identity', label: '7', title: 'Reclaim Your Identity',
-      teaching: `<p>Purity culture can shame age-appropriate sexual behavior.</p>`,
+      teaching: `<p>Purity culture and rigid religious teaching can shame age-appropriate development, including sexuality. Reclaiming your identity means separating who you are from what you were told you had to be.</p>`,
       prompts: [
-        { id: 'id_1', label: 'Journal about how shame has shown up in your current sexual relationship(s).', type: 'textarea', big: true },
-        { id: 'id_2', label: "Who are your heroes — the people who show you what's possible? What do they show you about what's possible for your own life?", type: 'textarea', big: true }
+        { id: 'id_1', label: 'How has shame shown up in your current relationship(s) with intimacy or sexuality?', type: 'textarea', big: true },
+        { id: 'id_2', label: 'Who are you outside of religion? What do you value — not because you were told to, but because it genuinely aligns with who you are?', type: 'textarea', big: true }
       ]
     },
     {
       id: 'meaning', label: '8', title: 'Find Meaning on Your Own Terms',
-      teaching: ``,
+      teaching: `<p>Healing doesn't require replacing one set of rules with another. Meaning can be built — or rebuilt — in a way that's genuinely yours.</p>`,
       prompts: [
-        { id: 'm_1', label: 'What does everyday life look like for you now?', type: 'textarea' },
-        { id: 'm_2', label: 'Do you want to participate in another church organization?', type: 'textarea' },
-        { id: 'm_3', label: 'Are you interested in exploring secular beliefs?', type: 'textarea' },
-        { id: 'm_4', label: 'Do you believe in God or a Higher Power?', type: 'textarea' },
-        { id: 'm_5', label: 'What does spirituality look like for you now?', type: 'textarea' }
+        { id: 'm_1', label: 'What does everyday, meaningful life look like for you now?', type: 'textarea' },
+        { id: 'm_2', label: 'Do you want to participate in any faith community going forward? Why or why not?', type: 'textarea' },
+        { id: 'm_3', label: 'What does spirituality — or its absence — look like for you today?', type: 'textarea' },
+        { id: 'm_4', label: 'Do you believe in God or a Higher Power? However you answer, what shapes that belief?', type: 'textarea' }
       ]
     },
     {
       id: 'done', type: 'done', label: '✓', title: "You've made it through",
-      teaching: `<p>Hope you've enjoyed this so far — more to come. Wherever you are in this process, take a moment before you close this: you did something today that mattered.</p>
+      teaching: `<p>Religious trauma is real. It's not a fleeting discomfort or a grudge against faith — it's deep, complex, and often woven into a person's sense of identity. Healing isn't about getting everything right or erasing the past. It's about radical honesty: sitting with the pain, acknowledging its impact, and choosing not to let it define you anymore.</p>
+      <p>You are allowed to take up space. You are allowed to ask questions. You are allowed to define your own path forward.</p>
+      <p style="font-style:italic;">"Vulnerability is our most accurate measurement of courage." — Brené Brown</p>
+      <div class="wb-note">If you are struggling and need support beyond this workbook, please reach out to a licensed mental health professional, or call or text 988 (Suicide &amp; Crisis Lifeline) in the U.S. any time.</div>
       <div class="wb-note">You can print or save all of your answers as a PDF anytime using the button below — now, or after you've had more time with these prompts.</div>`,
       prompts: []
     }
@@ -1870,6 +2041,9 @@
         if (p.type === 'checklist') {
           try { return JSON.parse(val).length > 0; } catch (e) { return false; }
         }
+        if (p.type === 'checkbox_note') {
+          try { const s = JSON.parse(val); return s.checked || (s.text && s.text.trim().length > 0); } catch (e) { return false; }
+        }
         return val.trim().length > 0;
       });
       if (i < currentStep && (step.prompts.length === 0 || stepHasAnswers)) dot.classList.add('done');
@@ -1905,6 +2079,20 @@
         </div>`;
         return;
       }
+      if (p.type === 'checkbox_note') {
+        let stored = { checked: false, text: '' };
+        try { stored = answers[p.id] ? JSON.parse(answers[p.id]) : stored; } catch (e) { /* keep default */ }
+        const bigClass = p.big ? ' wb-big' : '';
+        html += `<div class="wb-prompt" data-checkbox-note="${p.id}">
+          <label class="wb-prompt-checkbox-label">
+            <input type="checkbox" data-checknote-box ${stored.checked ? 'checked' : ''}>
+            <span>${p.label}</span>
+          </label>
+          <textarea class="wb-field${bigClass}" data-checknote-text>${escapeHtml(stored.text)}</textarea>
+          <div class="wb-saved-indicator" id="saved-${p.id}">Saved ✓</div>
+        </div>`;
+        return;
+      }
       const val = answers[p.id] || '';
       const bigClass = p.big ? ' wb-big' : '';
       html += `<div class="wb-prompt">
@@ -1929,6 +2117,25 @@
         }
         updateProgressBar();
       });
+    });
+
+    bodyEl.querySelectorAll('[data-checkbox-note]').forEach(wrapEl => {
+      const id = wrapEl.dataset.checkboxNote;
+      const boxEl = wrapEl.querySelector('[data-checknote-box]');
+      const textEl = wrapEl.querySelector('[data-checknote-text]');
+      const persist = () => {
+        answers[id] = JSON.stringify({ checked: boxEl.checked, text: textEl.value });
+        saveAnswers();
+        const indicator = document.getElementById('saved-' + id);
+        if (indicator) {
+          indicator.classList.add('show');
+          clearTimeout(indicator._timeout);
+          indicator._timeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+        }
+        updateProgressBar();
+      };
+      boxEl.addEventListener('change', persist);
+      textEl.addEventListener('input', persist);
     });
 
     bodyEl.querySelectorAll('.wb-checklist-field').forEach(fieldEl => {
@@ -2016,6 +2223,15 @@
               checked.map(c => `<li>☑ ${escapeHtml(c)}</li>`).join('') + '</ul></div>';
           } else {
             html += `<div class="wb-print-a wb-print-empty">(none checked)</div>`;
+          }
+        } else if (p.type === 'checkbox_note') {
+          let stored = { checked: false, text: '' };
+          try { stored = answers[p.id] ? JSON.parse(answers[p.id]) : stored; } catch (e) { /* keep default */ }
+          const box = stored.checked ? '☑' : '☐';
+          if (stored.text && stored.text.trim().length > 0) {
+            html += `<div class="wb-print-a">${box} ${escapeHtml(stored.text)}</div>`;
+          } else {
+            html += `<div class="wb-print-a wb-print-empty">${box} (not yet answered)</div>`;
           }
         } else {
           const val = answers[p.id];
