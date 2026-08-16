@@ -844,6 +844,108 @@
   }
   .wb-tool-btn:hover { background: var(--plum-light); }
 
+  /* ---------- Interactive Workbook sub-tabs (Workbook / Practice) ---------- */
+
+  .wb-subtabs {
+    display: flex;
+    gap: 8px;
+    padding: 14px 24px 0 24px;
+  }
+  .wb-subtab-btn {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    color: var(--ink-soft);
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .wb-subtab-btn:hover { border-color: var(--plum); color: var(--plum-dark); }
+  .wb-subtab-btn.active {
+    background: var(--plum);
+    border-color: var(--plum);
+    color: white;
+  }
+
+  /* ---------- Practice a Conversation (role-play) ---------- */
+
+  #wb-view-practice { padding: 20px 24px; }
+
+  .rp-avatar-grid, .rp-scenario-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .rp-other-input-wrap { max-width: 320px; margin: 10px 0 16px 0; }
+
+  .rp-avatar-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 92px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+  .rp-avatar-card:hover { border-color: var(--plum); transform: translateY(-2px); }
+  .rp-avatar-card.selected { border-color: var(--sage); background: var(--sage-light); }
+  .rp-avatar-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--plum-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .rp-avatar-card span.rp-avatar-label { font-size: 12.5px; color: var(--ink); font-weight: 500; }
+
+  .rp-scenario-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    padding: 9px 16px 9px 12px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  .rp-scenario-card:hover { border-color: var(--plum); }
+  .rp-scenario-card.selected { border-color: var(--sage); background: var(--sage-light); color: var(--plum-dark); font-weight: 500; }
+
+  .rp-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .rp-chat-header-info { display: flex; align-items: center; gap: 10px; }
+  .rp-chat-header-info div { display: flex; flex-direction: column; }
+  .rp-chat-header-info strong { color: var(--plum-dark); font-size: 14.5px; }
+  .rp-chat-header-info span { font-size: 12px; color: var(--ink-soft); }
+  .rp-chat-partner-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--plum-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
   /* Intro screen */
   .wb-intro-photo { text-align: center; margin-bottom: 6px; }
   .wb-intro-photo img {
@@ -1179,6 +1281,12 @@
   </div>
 
   <div class="app-tab-panel" id="panel-workbook">
+    <div class="wb-subtabs">
+      <button class="wb-subtab-btn active" id="wb-subtab-workbook" data-subtab="workbook">📖 Workbook</button>
+      <button class="wb-subtab-btn" id="wb-subtab-practice" data-subtab="practice">🎭 Practice a Conversation</button>
+    </div>
+
+    <div id="wb-view-workbook">
     <div class="wb-resume-banner wb-hidden" id="wb-resume-banner">
     <span>👋 Welcome back — you have saved progress. Pick up where you left off?</span>
     <div style="display:flex; gap:8px;">
@@ -1196,6 +1304,40 @@
     <button class="wb-tool-btn" id="wb-print-btn">🖨️ Print / Save as PDF</button>
     <button class="wb-tool-btn" id="wb-reset-btn">↺ Clear my answers</button>
   </div>
+  </div>
+
+    <div class="wb-hidden" id="wb-view-practice">
+      <div id="rp-picker">
+        <p class="rf-section-label">🎭 Who would you like to practice talking to?</p>
+        <div class="rp-avatar-grid" id="rp-partner-grid"></div>
+        <div class="rp-other-input-wrap wb-hidden" id="rp-other-input-wrap">
+          <input type="text" class="rf-input" id="rp-other-input" placeholder="Who are you practicing with? (e.g. Aunt, Bishop, Cousin)" maxlength="40" autocomplete="off">
+        </div>
+
+        <p class="rf-section-label" style="margin-top:22px;">💬 What's the conversation about?</p>
+        <div class="rp-scenario-grid" id="rp-scenario-grid"></div>
+
+        <button class="rf-continue-btn wb-hidden" id="rp-start-btn">Start practicing →</button>
+      </div>
+
+      <div class="wb-hidden" id="rp-chat-view">
+        <div class="rp-chat-header">
+          <div class="rp-chat-header-info">
+            <span class="rp-chat-partner-avatar" id="rp-chat-avatar"></span>
+            <div>
+              <strong id="rp-chat-partner-name"></strong>
+              <span id="rp-chat-scenario-name"></span>
+            </div>
+          </div>
+          <button class="wb-tool-btn" id="rp-end-btn">↺ Choose someone else</button>
+        </div>
+        <div class="rf-messages" id="rp-messages"></div>
+        <div class="rf-input-row" id="rp-input-row">
+          <input type="text" class="rf-input" id="rp-input" placeholder="Say what you'd actually say..." autocomplete="off">
+          <button class="rf-send" id="rp-send-btn">Send</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   </div>
@@ -2118,7 +2260,7 @@
             <div class="wb-expand-item-row">
               <input type="checkbox" data-expand-box ${entry.checked ? 'checked' : ''}>
               <span data-expand-label>${escapeHtml(opt)}</span>
-              <button type="button" class="wb-expand-toggle" data-expand-toggle>${entry.checked ? '💭 Hide notes' : '💭 Add notes'}</button>
+              <button type="button" class="wb-expand-toggle" data-expand-toggle title="${entry.checked ? 'Hide notes' : 'Add notes'}" aria-label="${entry.checked ? 'Hide notes' : 'Add notes'}">${entry.checked ? '💭' : '➕💭'}</button>
             </div>
             <div class="wb-expand-note-wrap">
               <textarea data-expand-note placeholder="Say more about this one...">${escapeHtml(entry.note)}</textarea>
@@ -2235,7 +2377,10 @@
         boxEl.addEventListener('change', () => {
           itemEl.classList.toggle('checked', boxEl.checked);
           itemEl.classList.toggle('open', boxEl.checked);
-          toggleBtn.textContent = itemEl.classList.contains('open') ? '💭 Hide notes' : '💭 Add notes';
+          const isOpenNow = itemEl.classList.contains('open');
+          toggleBtn.textContent = isOpenNow ? '💭' : '➕💭';
+          toggleBtn.title = isOpenNow ? 'Hide notes' : 'Add notes';
+          toggleBtn.setAttribute('aria-label', isOpenNow ? 'Hide notes' : 'Add notes');
           const stored = readStored();
           stored[opt] = { checked: boxEl.checked, note: noteEl.value };
           persist(stored);
@@ -2244,7 +2389,10 @@
 
         const toggleOpen = () => {
           itemEl.classList.toggle('open');
-          toggleBtn.textContent = itemEl.classList.contains('open') ? '💭 Hide notes' : '💭 Add notes';
+          const isOpenNow = itemEl.classList.contains('open');
+          toggleBtn.textContent = isOpenNow ? '💭' : '➕💭';
+          toggleBtn.title = isOpenNow ? 'Hide notes' : 'Add notes';
+          toggleBtn.setAttribute('aria-label', isOpenNow ? 'Hide notes' : 'Add notes');
         };
         toggleBtn.addEventListener('click', toggleOpen);
         labelEl.addEventListener('click', toggleOpen);
@@ -2416,6 +2564,269 @@
       btn.classList.add('active');
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
     });
+  });
+
+  // ---- Workbook sub-tabs: Workbook vs. Practice a Conversation ----
+  const wbSubtabButtons = document.querySelectorAll('.wb-subtab-btn');
+  const wbViewWorkbook = document.getElementById('wb-view-workbook');
+  const wbViewPractice = document.getElementById('wb-view-practice');
+  wbSubtabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      wbSubtabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const isPractice = btn.dataset.subtab === 'practice';
+      wbViewWorkbook.classList.toggle('wb-hidden', isPractice);
+      wbViewPractice.classList.toggle('wb-hidden', !isPractice);
+    });
+  });
+
+  // ---- Practice a Conversation (role-play) ----
+  const RP_PARTNERS = [
+    { id: 'grandma', emoji: '👵', label: 'Grandma', opener: "Oh, hi — come sit with me. What's on your mind?" },
+    { id: 'mom', emoji: '👩', label: 'Mom', opener: "Hi honey, you sounded like you wanted to talk about something. What's going on?" },
+    { id: 'dad', emoji: '🧔', label: 'Dad', opener: "Alright, I'm listening. What did you want to talk to me about?" },
+    { id: 'spouse', emoji: '💍', label: 'Spouse', opener: "Hey, you said you wanted to talk. I'm here — what's up?" },
+    { id: 'sibling', emoji: '🧑', label: 'Sibling', opener: "What's going on? You've seemed kind of off lately." },
+    { id: 'friend', emoji: '🙋', label: 'Friend from church', opener: "Hey! Good to see you — what did you want to chat about?" },
+  ];
+  const RP_SCENARIOS = [
+    { id: 'lgbt', emoji: '🏳️‍🌈', label: 'Talking about being LGBTQ+' },
+    { id: 'church', emoji: '⛪', label: 'Going to a different church' },
+    { id: 'doctrine_harm', emoji: '💔', label: 'How the doctrine harmed you' },
+    { id: 'decline_activities', emoji: '🙅', label: 'Declining a religious activity' },
+    { id: 'decline_celebrations', emoji: '🎉', label: 'Declining a holiday or celebration' },
+    { id: 'temple_recommend', emoji: '🕍', label: "Not holding a temple recommend" },
+    { id: 'changed_beliefs', emoji: '🧭', label: 'No longer holding the same beliefs' },
+    { id: 'limited_contact', emoji: '🚧', label: 'Setting limited contact with family' },
+  ];
+
+  const rpPartnerGridEl = document.getElementById('rp-partner-grid');
+  const rpScenarioGridEl = document.getElementById('rp-scenario-grid');
+  const rpStartBtnEl = document.getElementById('rp-start-btn');
+  const rpPickerEl = document.getElementById('rp-picker');
+  const rpChatViewEl = document.getElementById('rp-chat-view');
+  const rpMessagesEl = document.getElementById('rp-messages');
+  const rpInputEl = document.getElementById('rp-input');
+  const rpSendBtnEl = document.getElementById('rp-send-btn');
+  const rpChatAvatarEl = document.getElementById('rp-chat-avatar');
+  const rpChatPartnerNameEl = document.getElementById('rp-chat-partner-name');
+  const rpChatScenarioNameEl = document.getElementById('rp-chat-scenario-name');
+  const rpEndBtnEl = document.getElementById('rp-end-btn');
+
+  let rpSelectedPartner = null;
+  let rpSelectedScenario = null;
+  let rpConversation = [];
+
+  const rpOtherInputWrapEl = document.getElementById('rp-other-input-wrap');
+  const rpOtherInputEl = document.getElementById('rp-other-input');
+
+  RP_PARTNERS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'rp-avatar-card';
+    card.dataset.partnerId = p.id;
+    card.innerHTML = `<span class="rp-avatar-icon">${p.emoji}</span><span class="rp-avatar-label">${p.label}</span>`;
+    card.addEventListener('click', () => {
+      rpSelectedPartner = p;
+      rpPartnerGridEl.querySelectorAll('.rp-avatar-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      rpOtherInputWrapEl.classList.add('wb-hidden');
+      updateRpStartBtn();
+    });
+    rpPartnerGridEl.appendChild(card);
+  });
+
+  const rpOtherCard = document.createElement('div');
+  rpOtherCard.className = 'rp-avatar-card';
+  rpOtherCard.dataset.partnerId = 'other';
+  rpOtherCard.innerHTML = `<span class="rp-avatar-icon">❓</span><span class="rp-avatar-label">Other</span>`;
+  rpOtherCard.addEventListener('click', () => {
+    rpPartnerGridEl.querySelectorAll('.rp-avatar-card').forEach(c => c.classList.remove('selected'));
+    rpOtherCard.classList.add('selected');
+    rpOtherInputWrapEl.classList.remove('wb-hidden');
+    rpOtherInputEl.focus();
+    const label = rpOtherInputEl.value.trim() || 'Someone else';
+    rpSelectedPartner = { id: 'other', emoji: '❓', label, opener: "Hi — you wanted to talk to me about something?" };
+    updateRpStartBtn();
+  });
+  rpPartnerGridEl.appendChild(rpOtherCard);
+
+  rpOtherInputEl.addEventListener('input', () => {
+    const label = rpOtherInputEl.value.trim() || 'Someone else';
+    rpSelectedPartner = { id: 'other', emoji: '❓', label, opener: "Hi — you wanted to talk to me about something?" };
+    updateRpStartBtn();
+  });
+
+  RP_SCENARIOS.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'rp-scenario-card';
+    card.dataset.scenarioId = s.id;
+    card.innerHTML = `<span>${s.emoji}</span><span>${s.label}</span>`;
+    card.addEventListener('click', () => {
+      rpSelectedScenario = s;
+      rpScenarioGridEl.querySelectorAll('.rp-scenario-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      updateRpStartBtn();
+    });
+    rpScenarioGridEl.appendChild(card);
+  });
+
+  function updateRpStartBtn() {
+    rpStartBtnEl.classList.toggle('wb-hidden', !(rpSelectedPartner && rpSelectedScenario));
+  }
+
+  function addRoleplayMessage(role, text) {
+    const block = document.createElement('div');
+    block.className = 'rf-msg-block ' + (role === 'user' ? 'user' : 'crystal');
+
+    const bubble = document.createElement('div');
+    bubble.className = 'rf-msg ' + (role === 'user' ? 'user' : 'crystal');
+    if (role === 'user') {
+      bubble.textContent = text;
+      block.appendChild(bubble);
+    } else {
+      bubble.innerHTML = applyInlineFormatting(escapeHtmlChat(text));
+
+      const row = document.createElement('div');
+      row.className = 'rf-msg-row';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'rf-msg-mini-avatar';
+      avatar.style.display = 'flex';
+      avatar.style.alignItems = 'center';
+      avatar.style.justifyContent = 'center';
+      avatar.style.background = 'var(--plum-light)';
+      avatar.style.fontSize = '14px';
+      avatar.textContent = rpSelectedPartner ? rpSelectedPartner.emoji : '🙂';
+      row.appendChild(avatar);
+
+      const col = document.createElement('div');
+      col.className = 'rf-msg-col';
+      col.appendChild(bubble);
+      row.appendChild(col);
+      block.appendChild(row);
+    }
+
+    rpMessagesEl.appendChild(block);
+    rpMessagesEl.scrollTop = rpMessagesEl.scrollHeight;
+  }
+
+  function showRpTyping() {
+    const block = document.createElement('div');
+    block.className = 'rf-msg-block crystal';
+    block.id = 'rp-typing-block';
+    const row = document.createElement('div');
+    row.className = 'rf-msg-row';
+    const avatar = document.createElement('div');
+    avatar.className = 'rf-msg-mini-avatar';
+    avatar.style.display = 'flex';
+    avatar.style.alignItems = 'center';
+    avatar.style.justifyContent = 'center';
+    avatar.style.background = 'var(--plum-light)';
+    avatar.style.fontSize = '14px';
+    avatar.textContent = rpSelectedPartner ? rpSelectedPartner.emoji : '🙂';
+    row.appendChild(avatar);
+    const div = document.createElement('div');
+    div.className = 'rf-msg typing';
+    div.innerHTML = '<span class="rf-dot"></span><span class="rf-dot"></span><span class="rf-dot"></span>';
+    row.appendChild(div);
+    block.appendChild(row);
+    rpMessagesEl.appendChild(block);
+    rpMessagesEl.scrollTop = rpMessagesEl.scrollHeight;
+  }
+
+  function hideRpTyping() {
+    const el = document.getElementById('rp-typing-block');
+    if (el) el.remove();
+  }
+
+  function startPractice() {
+    if (!rpSelectedPartner || !rpSelectedScenario) return;
+    rpConversation = [];
+    rpMessagesEl.innerHTML = '';
+    rpChatAvatarEl.textContent = rpSelectedPartner.emoji;
+    rpChatPartnerNameEl.textContent = rpSelectedPartner.label;
+    rpChatScenarioNameEl.textContent = rpSelectedScenario.label;
+    rpPickerEl.classList.add('wb-hidden');
+    rpChatViewEl.classList.remove('wb-hidden');
+    addRoleplayMessage('crystal', rpSelectedPartner.opener);
+    rpConversation.push({ role: 'assistant', content: rpSelectedPartner.opener });
+    rpInputEl.focus();
+  }
+
+  async function sendRoleplayMessage(text) {
+    if (!text || !text.trim()) return;
+    const email = getStoredEmail();
+    if (!email) {
+      relockApp('Please enter your email to unlock this.');
+      return;
+    }
+
+    addRoleplayMessage('user', text);
+    rpConversation.push({ role: 'user', content: text });
+    rpInputEl.value = '';
+    rpSendBtnEl.disabled = true;
+    showRpTyping();
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: rpConversation,
+          email,
+          mode: 'roleplay',
+          partnerId: rpSelectedPartner.id,
+          partnerLabel: rpSelectedPartner.id === 'other' ? rpSelectedPartner.label : undefined,
+          scenarioId: rpSelectedScenario.id,
+        }),
+      });
+
+      const data = await response.json();
+      hideRpTyping();
+
+      if (response.status === 403) {
+        rpConversation.pop();
+        relockApp("Your email couldn't be verified — please sign up again.");
+        return;
+      }
+
+      if (!response.ok) {
+        addRoleplayMessage('crystal', "Something went wrong — let's try that again in a moment.");
+        rpConversation.pop();
+        return;
+      }
+
+      const reply = data.content && data.content[0] && data.content[0].text
+        ? data.content[0].text
+        : "...";
+      addRoleplayMessage('crystal', reply);
+      rpConversation.push({ role: 'assistant', content: reply });
+    } catch (err) {
+      hideRpTyping();
+      addRoleplayMessage('crystal', "Something went wrong — let's try that again in a moment.");
+      rpConversation.pop();
+    } finally {
+      rpSendBtnEl.disabled = false;
+      rpInputEl.focus();
+    }
+  }
+
+  rpStartBtnEl.addEventListener('click', startPractice);
+  rpSendBtnEl.addEventListener('click', () => sendRoleplayMessage(rpInputEl.value));
+  rpInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendRoleplayMessage(rpInputEl.value);
+    }
+  });
+  rpEndBtnEl.addEventListener('click', () => {
+    rpChatViewEl.classList.add('wb-hidden');
+    rpPickerEl.classList.remove('wb-hidden');
+    rpSelectedPartner = null;
+    rpSelectedScenario = null;
+    rpPartnerGridEl.querySelectorAll('.rp-avatar-card').forEach(c => c.classList.remove('selected'));
+    rpScenarioGridEl.querySelectorAll('.rp-scenario-card').forEach(c => c.classList.remove('selected'));
+    updateRpStartBtn();
   });
 
 </script>
