@@ -1668,6 +1668,8 @@
     return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   }
 
+  const CHECK_EMOJIS = ['🤍', '🌱', '✨', '🕊️', '💭', '🌷'];
+
   function renderCrystalText(raw) {
     const lines = raw.split('\n');
     let html = '';
@@ -1685,9 +1687,10 @@
 
       if (checkMatch) {
         if (!inList) { html += '<ul class="rf-msg-list">'; inList = true; }
+        const uncheckedEmoji = CHECK_EMOJIS[checkIdCounter % CHECK_EMOJIS.length];
         checkIdCounter++;
         const cid = 'chk-' + Date.now() + '-' + checkIdCounter;
-        html += `<li class="rf-msg-check"><label><input type="checkbox" id="${cid}"><span class="rf-msg-check-emoji">🤍</span><span>${applyInlineFormatting(escapeHtmlChat(checkMatch[1]))}</span></label></li>`;
+        html += `<li class="rf-msg-check"><label><input type="checkbox" id="${cid}"><span class="rf-msg-check-emoji" data-unchecked-emoji="${uncheckedEmoji}">${uncheckedEmoji}</span><span>${applyInlineFormatting(escapeHtmlChat(checkMatch[1]))}</span></label></li>`;
       } else if (bulletMatch) {
         if (!inList) { html += '<ul class="rf-msg-list">'; inList = true; }
         html += `<li>${applyInlineFormatting(escapeHtmlChat(bulletMatch[1]))}</li>`;
@@ -1716,7 +1719,7 @@
           const item = cb.closest('.rf-msg-check');
           item.classList.toggle('checked', cb.checked);
           const emojiSpan = item.querySelector('.rf-msg-check-emoji');
-          if (emojiSpan) emojiSpan.textContent = cb.checked ? '💚' : '🤍';
+          if (emojiSpan) emojiSpan.textContent = cb.checked ? '💚' : emojiSpan.dataset.uncheckedEmoji;
         });
       });
     } else {
