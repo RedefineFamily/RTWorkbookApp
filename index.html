@@ -554,6 +554,37 @@
     transform: scale(1.15);
   }
 
+  .rf-speak-btn {
+    background: none;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 8px;
+    opacity: 0.45;
+    transition: opacity 0.15s ease, background 0.15s ease;
+  }
+  .rf-speak-btn:hover { opacity: 0.8; background: var(--plum-light); }
+  .rf-speak-btn.speaking { opacity: 1; background: var(--sage-light); animation: rf-speak-pulse 1s ease-in-out infinite; }
+  @keyframes rf-speak-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+  .wb-speak-btn {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    color: var(--plum);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 6px 0 2px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .wb-speak-btn:hover { border-color: var(--plum); background: var(--plum-light); }
+  .wb-speak-btn.speaking { border-color: var(--sage); background: var(--sage-light); }
+
   .rf-react-note {
     font-size: 11.5px;
     color: var(--ink-soft);
@@ -1773,6 +1804,64 @@
 
   const CHECK_EMOJIS = ['🤍', '✏️', '🖊️', '📄', '💌', '📝'];
 
+  // ---- Text-to-speech: read app text aloud instead of the participant
+  // having to read it. Click-to-speak only (never auto-plays) — an
+  // unexpected voice suddenly speaking can be jarring, especially in a
+  // trauma-sensitive app. Browser-native Web Speech API, no server calls.
+  function stripForSpeech(text) {
+    return String(text)
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/^\s*\[\s?[xX]?\s?\]\s+/gm, '')
+      .replace(/^\s*[-*]\s+/gm, '')
+      .replace(/[\r\n]+/g, '. ')
+      .trim();
+  }
+
+  let cachedVoices = [];
+  function loadVoices() { cachedVoices = window.speechSynthesis.getVoices(); }
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  // No gender field exists on SpeechSynthesisVoice, so this matches on
+  // common female-voice names across platforms (Windows/Zira, macOS/
+  // Samantha, Chrome's Google voices, etc.) — best-effort, not exact.
+  function pickFemaleVoice() {
+    const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+    const femalePattern = /female|zira|samantha|victoria|karen|moira|tessa|fiona|susan|allison|ava|joanna|salli|kimberly|kendra|ivy|amy|emma|aria|jenny|libby|olivia/i;
+    const english = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+    const pool = english.length ? english : voices;
+    return pool.find(v => femalePattern.test(v.name)) || pool[0] || voices[0];
+  }
+
+  let speakingBtn = null;
+  function toggleSpeak(rawText, btn) {
+    if (!('speechSynthesis' in window)) return;
+    const wasThisSpeaking = speakingBtn === btn && window.speechSynthesis.speaking;
+    window.speechSynthesis.cancel();
+    if (speakingBtn) speakingBtn.classList.remove('speaking');
+    speakingBtn = null;
+    if (wasThisSpeaking) return;
+
+    const clean = stripForSpeech(rawText);
+    if (!clean) return;
+    const utter = new SpeechSynthesisUtterance(clean);
+    const voice = pickFemaleVoice();
+    if (voice) utter.voice = voice;
+    utter.rate = 0.98;
+    const stop = () => {
+      btn.classList.remove('speaking');
+      if (speakingBtn === btn) speakingBtn = null;
+    };
+    utter.onend = stop;
+    utter.onerror = stop;
+    btn.classList.add('speaking');
+    speakingBtn = btn;
+    window.speechSynthesis.speak(utter);
+  }
+
   function renderCrystalText(raw) {
     const lines = raw.split('\n');
     let html = '';
@@ -1850,6 +1939,14 @@
 
       const reactions = document.createElement('div');
       reactions.className = 'rf-reactions';
+
+      const speakBtn = document.createElement('button');
+      speakBtn.className = 'rf-speak-btn';
+      speakBtn.textContent = '🔊';
+      speakBtn.title = 'Read this out loud';
+      speakBtn.setAttribute('aria-label', 'Read this out loud');
+      speakBtn.addEventListener('click', () => toggleSpeak(text, speakBtn));
+      reactions.appendChild(speakBtn);
 
       const note = document.createElement('span');
       note.className = 'rf-react-note';
@@ -2418,6 +2515,9 @@
     }
     html += `<h2 class="wb-title">${step.title}</h2>`;
     html += `<div class="wb-teaching">${step.teaching}</div>`;
+    if (step.teaching) {
+      html += `<button type="button" class="wb-speak-btn" data-speak-teaching>🔊 Read this out loud</button>`;
+    }
 
     step.prompts.forEach(p => {
       if (p.type === 'expand_checklist') {
@@ -2482,12 +2582,24 @@
       const bigClass = p.big ? ' wb-big' : '';
       html += `<div class="wb-prompt">
         <label for="${p.id}">${p.label}</label>
+        <button type="button" class="rf-speak-btn" data-speak-question="${escapeHtml(p.label)}" title="Read this question out loud" aria-label="Read this question out loud" style="vertical-align:middle;">🔊</button>
         <textarea id="${p.id}" class="wb-field${bigClass}" data-field="${p.id}">${escapeHtml(val)}</textarea>
         <div class="wb-saved-indicator" id="saved-${p.id}">Saved ✓</div>
       </div>`;
     });
 
     bodyEl.innerHTML = html;
+
+    const teachingSpeakBtn = bodyEl.querySelector('[data-speak-teaching]');
+    if (teachingSpeakBtn) {
+      const teachingEl = bodyEl.querySelector('.wb-teaching');
+      teachingSpeakBtn.addEventListener('click', () => {
+        toggleSpeak(teachingEl ? teachingEl.textContent : '', teachingSpeakBtn);
+      });
+    }
+    bodyEl.querySelectorAll('[data-speak-question]').forEach(btn => {
+      btn.addEventListener('click', () => toggleSpeak(btn.dataset.speakQuestion, btn));
+    });
 
     bodyEl.querySelectorAll('.wb-field').forEach(field => {
       field.addEventListener('input', (e) => {
@@ -2878,6 +2990,16 @@
       const col = document.createElement('div');
       col.className = 'rf-msg-col';
       col.appendChild(bubble);
+
+      const speakBtn = document.createElement('button');
+      speakBtn.className = 'rf-speak-btn';
+      speakBtn.textContent = '🔊';
+      speakBtn.title = 'Read this out loud';
+      speakBtn.setAttribute('aria-label', 'Read this out loud');
+      speakBtn.style.alignSelf = 'flex-start';
+      speakBtn.addEventListener('click', () => toggleSpeak(text, speakBtn));
+      col.appendChild(speakBtn);
+
       row.appendChild(col);
       block.appendChild(row);
     }
