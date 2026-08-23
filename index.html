@@ -33,14 +33,23 @@
   }
 
   .rf-disclaimer {
-    background: var(--plum-light);
-    color: var(--plum-dark);
-    font-size: 12.5px;
-    padding: 16px 26px;
-    line-height: 1.6;
+    background: var(--cream);
+    padding: 18px 26px;
     border-bottom: 1px solid var(--border);
     border-radius: 0 0 18px 18px;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rf-disclaimer-line {
+    background: rgba(91,58,92,0.14);
+    color: var(--plum-dark);
+    font-size: 12.5px;
+    line-height: 1.5;
+    padding: 10px 15px;
+    border-radius: 12px;
   }
 
   .rf-disclaimer strong { font-weight: 600; }
@@ -1267,11 +1276,11 @@
   </div>
 
   <div class="rf-disclaimer">
-    <strong>🤝 This is peer mentoring, not therapy.</strong><br>
-    🚨 Call <a href="tel:911" style="color:var(--plum-dark);font-weight:600;">9-1-1</a> if you are in immediate danger of harming yourself or others.<br>
-    ☎️ Call <a href="tel:988" style="color:var(--plum-dark);font-weight:600;">9-8-8</a> for mental health support.<br>
-    🤝 <a href="https://warmline.org" target="_blank" rel="noopener" style="color:var(--plum-dark);font-weight:600;">24/7 Nonurgent Support with live peer support</a><br>
-    ⚠️ This program can make mistakes. Please reach out to a licensed professional for therapeutic support.
+    <div class="rf-disclaimer-line"><strong>🤝 This is mentoring, not therapy.</strong></div>
+    <div class="rf-disclaimer-line">🚨 Call <a href="tel:911" style="color:var(--plum-dark);font-weight:600;">9-1-1</a> if you are in immediate danger of harming yourself or others.</div>
+    <div class="rf-disclaimer-line">☎️ Call <a href="tel:988" style="color:var(--plum-dark);font-weight:600;">9-8-8</a> for mental health support.</div>
+    <div class="rf-disclaimer-line">🤝 <a href="https://warmline.org" target="_blank" rel="noopener" style="color:var(--plum-dark);font-weight:600;">24/7 Nonurgent Support with live peer support</a></div>
+    <div class="rf-disclaimer-line">⚠️ This program can make mistakes. Please reach out to a licensed professional for therapeutic support.</div>
   </div>
 
   <div class="rf-gate" id="rf-gate">
