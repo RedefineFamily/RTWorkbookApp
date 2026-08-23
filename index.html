@@ -1249,8 +1249,8 @@
 
   <div class="rf-gate" id="rf-gate">
     <div class="rf-gate-icon">🕊️</div>
-    <p class="rf-gate-heading">Get access to the chat and workbook</p>
-    <p class="rf-gate-copy">You must provide an email address to access this program — verified through Kit. You'll also get occasional updates from Redefine Family; unsubscribe anytime.</p>
+    <p class="rf-gate-heading">Get access to this mentoring program</p>
+    <p class="rf-gate-copy">This is a mentoring program — the chat and workbook here are peer mentoring, not therapy. You must provide an email address to access it — verified through Kit. You'll also get occasional updates from Redefine Family; unsubscribe anytime.</p>
     <form class="rf-gate-form" id="rf-gate-form">
       <input type="email" class="rf-gate-input" id="rf-gate-email" placeholder="you@example.com" autocomplete="email" required>
       <button type="submit" class="rf-gate-submit" id="rf-gate-submit">Unlock</button>
@@ -2230,11 +2230,11 @@
       <div class="wb-note">If the <strong>Religious Scrupulosity</strong> section resonated: <strong>NOCD</strong> (treatmyocd.com) specializes in connecting people with therapists trained specifically in Exposure and Response Prevention (ERP), including therapists experienced with religious scrupulosity — worth seeking out specifically, since general trauma therapy isn't the same treatment for this.</div>
       <div class="wb-note" style="font-style:italic;">This workbook is for educational purposes only and isn't a substitute for working with a licensed therapist — please reach out to one directly for support with anything raised here.</div>`,
       prompts: [
-        { id: 't_1', label: 'Write down your earliest memory of feeling safe.', type: 'checkbox_note' },
-        { id: 't_2', label: 'Who was with you?', type: 'checkbox_note' },
-        { id: 't_3', label: 'What routines did you have?', type: 'checkbox_note' },
-        { id: 't_4', label: 'Was there a person you felt safe with in childhood?', type: 'checkbox_note' },
-        { id: 't_5', label: 'What changed when your sense of safety disappeared?', type: 'checkbox_note' }
+        { id: 't_1', label: 'Write down your earliest memory of feeling safe.', type: 'textarea' },
+        { id: 't_2', label: 'Who was with you?', type: 'textarea' },
+        { id: 't_3', label: 'What routines did you have?', type: 'textarea' },
+        { id: 't_4', label: 'Was there a person you felt safe with in childhood?', type: 'textarea' },
+        { id: 't_5', label: 'What changed when your sense of safety disappeared?', type: 'textarea' }
       ]
     },
     {
@@ -2244,11 +2244,11 @@
       <div class="wb-note">If you're a parent yourself, <strong>Dan Siegel &amp; Mary Hartzell's <em>Parenting from the Inside Out</em></strong> connects your own attachment history to how you parent your own kids — a way to break a cycle rather than just understand it.</div>
       <p>A few questions about your own childhood attachment:</p>`,
       prompts: [
-        { id: 'a_1', label: 'Did I get my needs met?', type: 'checkbox_note' },
-        { id: 'a_2', label: 'Was I taught to explore my world safely?', type: 'checkbox_note' },
-        { id: 'a_3', label: 'Was I told the world was dangerous?', type: 'checkbox_note' },
-        { id: 'a_4', label: 'Did I feel safe at home?', type: 'checkbox_note' },
-        { id: 'a_5', label: 'Was I comforted when I cried?', type: 'checkbox_note' },
+        { id: 'a_1', label: 'Did I get my needs met?', type: 'textarea' },
+        { id: 'a_2', label: 'Was I taught to explore my world safely?', type: 'textarea' },
+        { id: 'a_3', label: 'Was I told the world was dangerous?', type: 'textarea' },
+        { id: 'a_4', label: 'Did I feel safe at home?', type: 'textarea' },
+        { id: 'a_5', label: 'Was I comforted when I cried?', type: 'textarea' },
         { id: 'a_6', label: 'What did your younger self need from you that they didn’t receive?', type: 'textarea', big: true }
       ]
     },
