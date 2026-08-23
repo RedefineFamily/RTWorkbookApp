@@ -760,10 +760,11 @@
 
   /* ---------- Tactic table (Power and Control Wheel detail) ---------- */
   .wb-tactic-table-wrap { overflow-x: auto; margin: 8px 0 18px 0; }
-  .wb-tactic-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 480px; }
+  .wb-tactic-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12.5px; min-width: 480px; }
   .wb-tactic-table th { background: var(--plum); color: white; text-align: left; padding: 8px 10px; font-weight: 600; font-size: 12px; }
+  .wb-tactic-table th:first-child, .wb-tactic-table td:first-child { width: 15%; }
   .wb-tactic-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
-  .wb-tactic-table td:first-child { font-weight: 600; color: var(--plum-dark); white-space: nowrap; }
+  .wb-tactic-table td:first-child { font-weight: 600; color: var(--plum-dark); white-space: normal; }
   .wb-tactic-table tr:nth-child(even) td { background: var(--cream); }
 
   /* ---------- Expandable checklist (checkbox + per-item note) ---------- */
@@ -2349,6 +2350,8 @@
     });
   }
 
+  const EXPAND_TOGGLE_EMOJIS = ['✏️', '📝', '📓', '📄', '🖊️', '📔'];
+
   function render() {
     const step = STEPS[currentStep];
     let html = '';
@@ -2368,11 +2371,12 @@
         p.options.forEach((opt, i) => {
           const entry = stored[opt] || { checked: false, note: '' };
           const openClass = entry.checked ? ' open' : '';
+          const closedEmoji = EXPAND_TOGGLE_EMOJIS[i % EXPAND_TOGGLE_EMOJIS.length];
           html += `<div class="wb-expand-item${entry.checked ? ' checked' : ''}${openClass}" data-option="${escapeHtml(opt)}">
             <div class="wb-expand-item-row">
               <input type="checkbox" data-expand-box ${entry.checked ? 'checked' : ''}>
               <span data-expand-label>${escapeHtml(opt)}</span>
-              <button type="button" class="wb-expand-toggle" data-expand-toggle title="${entry.checked ? 'Hide notes' : 'Add notes'}" aria-label="${entry.checked ? 'Hide notes' : 'Add notes'}">${entry.checked ? '💭' : '➕💭'}</button>
+              <button type="button" class="wb-expand-toggle" data-expand-toggle data-closed-emoji="${closedEmoji}" title="${entry.checked ? 'Hide notes' : 'Add notes'}" aria-label="${entry.checked ? 'Hide notes' : 'Add notes'}">${entry.checked ? '💭' : closedEmoji}</button>
             </div>
             <div class="wb-expand-note-wrap">
               <textarea data-expand-note placeholder="Say more about this one...">${escapeHtml(entry.note)}</textarea>
@@ -2490,7 +2494,7 @@
           itemEl.classList.toggle('checked', boxEl.checked);
           itemEl.classList.toggle('open', boxEl.checked);
           const isOpenNow = itemEl.classList.contains('open');
-          toggleBtn.textContent = isOpenNow ? '💭' : '➕💭';
+          toggleBtn.textContent = isOpenNow ? '💭' : toggleBtn.dataset.closedEmoji;
           toggleBtn.title = isOpenNow ? 'Hide notes' : 'Add notes';
           toggleBtn.setAttribute('aria-label', isOpenNow ? 'Hide notes' : 'Add notes');
           const stored = readStored();
@@ -2502,7 +2506,7 @@
         const toggleOpen = () => {
           itemEl.classList.toggle('open');
           const isOpenNow = itemEl.classList.contains('open');
-          toggleBtn.textContent = isOpenNow ? '💭' : '➕💭';
+          toggleBtn.textContent = isOpenNow ? '💭' : toggleBtn.dataset.closedEmoji;
           toggleBtn.title = isOpenNow ? 'Hide notes' : 'Add notes';
           toggleBtn.setAttribute('aria-label', isOpenNow ? 'Hide notes' : 'Add notes');
         };
