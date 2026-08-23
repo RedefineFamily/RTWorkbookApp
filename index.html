@@ -104,6 +104,51 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rf-gate::before, .rf-welcome::before {
+    content: '';
+    position: absolute;
+    top: -55px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--plum-light), transparent 70%);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .rf-gate::after, .rf-welcome::after {
+    content: '';
+    position: absolute;
+    bottom: -45px;
+    left: -35px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--sage-light), transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .rf-gate > *, .rf-welcome > * { position: relative; z-index: 1; }
+
+  .rf-gate-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--plum-light), var(--sage-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 2px 8px rgba(67,43,69,0.12);
+    margin-bottom: 2px;
   }
 
   .rf-gate-heading {
@@ -167,6 +212,8 @@
 
   .rf-welcome {
     padding: 24px 24px 8px 24px;
+    position: relative;
+    overflow: hidden;
   }
 
   .rf-welcome-greeting {
@@ -216,21 +263,28 @@
     background: white;
     border: 1.5px solid var(--border);
     border-radius: 999px;
-    padding: 8px 14px 8px 10px;
+    padding: 9px 16px 9px 11px;
     cursor: pointer;
     font-size: 13.5px;
     color: var(--ink);
     user-select: none;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 1px 4px rgba(67,43,69,0.05);
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .rf-check-item:hover { border-color: var(--plum); }
+  .rf-check-item:hover {
+    border-color: var(--plum);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(67,43,69,0.1);
+  }
 
   .rf-check-item.selected {
     background: var(--sage-light);
     border-color: var(--sage);
     color: var(--plum-dark);
     font-weight: 500;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(143,163,130,0.3);
   }
 
   .rf-check-box {
@@ -265,26 +319,33 @@
     gap: 12px;
     background: white;
     border: 1.5px solid var(--border);
-    border-radius: 14px;
+    border-radius: 18px;
     padding: 12px 16px;
     cursor: pointer;
     text-align: left;
     font-family: 'Lora', serif;
     font-size: 14.5px;
     color: var(--ink);
-    transition: border-color 0.15s ease, transform 0.1s ease;
+    box-shadow: 0 1px 4px rgba(67,43,69,0.05);
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .rf-path-card:hover {
     border-color: var(--plum);
-    transform: translateX(2px);
+    transform: translateX(2px) translateY(-2px);
+    box-shadow: 0 6px 16px rgba(67,43,69,0.1);
   }
 
   .rf-path-emoji {
-    font-size: 22px;
+    font-size: 19px;
     flex-shrink: 0;
-    width: 28px;
-    text-align: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--plum-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .rf-path-text strong {
@@ -1182,10 +1243,11 @@
     🚨 Call <a href="tel:911" style="color:var(--plum-dark);font-weight:600;">9-1-1</a> if you are in immediate danger of harming yourself or others.<br>
     ☎️ Call <a href="tel:988" style="color:var(--plum-dark);font-weight:600;">9-8-8</a> for mental health support.<br>
     🤝 <a href="https://warmline.org" target="_blank" rel="noopener" style="color:var(--plum-dark);font-weight:600;">24/7 Nonurgent Support with live peer support</a><br>
-    ⚠️ This AI can make mistakes. Please reach out to a licensed professional for therapeutic support.
+    ⚠️ This program can make mistakes. Please reach out to a licensed professional for therapeutic support.
   </div>
 
   <div class="rf-gate" id="rf-gate">
+    <div class="rf-gate-icon">🕊️</div>
     <p class="rf-gate-heading">Get access to the chat and workbook</p>
     <p class="rf-gate-copy">Enter your email to unlock. You'll also get occasional updates from Redefine Family — unsubscribe anytime.</p>
     <form class="rf-gate-form" id="rf-gate-form">
@@ -1347,7 +1409,7 @@
   </div>
 
   <div class="app-footer">
-    This AI can make mistakes and isn't a substitute for professional care. Find a therapist through <a href="https://redefinefam.com" target="_blank" rel="noopener">Redefine Family</a>.
+    This program can make mistakes and isn't a substitute for professional care. Find a therapist through <a href="https://redefinefam.com" target="_blank" rel="noopener">Redefine Family</a>.
   </div>
 </div>
 
