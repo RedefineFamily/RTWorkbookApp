@@ -1862,6 +1862,84 @@
     window.speechSynthesis.speak(utter);
   }
 
+  // ---- Ambient calming sound: a synthesized soft triad drone (Web Audio
+  // API) with slow amplitude swells, for the coping-strategy diagrams.
+  // No external audio files — nothing to license or host.
+  let ambientCtx = null;
+  let ambientNodes = [];
+  let ambientPlaying = false;
+
+  function stopAmbient() {
+    if (!ambientCtx) { ambientPlaying = false; return; }
+    const ctx = ambientCtx;
+    const now = ctx.currentTime;
+    ambientNodes.forEach(({ gain }) => {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0, now + 1.2);
+    });
+    const nodesToStop = ambientNodes;
+    setTimeout(() => {
+      nodesToStop.forEach(({ osc, lfo }) => {
+        try { osc.stop(); } catch (e) {}
+        try { lfo.stop(); } catch (e) {}
+      });
+      try { ctx.close(); } catch (e) {}
+    }, 1300);
+    ambientCtx = null;
+    ambientNodes = [];
+    ambientPlaying = false;
+  }
+
+  function startAmbient() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx || ambientPlaying) return;
+    ambientCtx = new AudioCtx();
+    const masterGain = ambientCtx.createGain();
+    masterGain.gain.value = 0;
+    const filter = ambientCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 900;
+    masterGain.connect(filter);
+    filter.connect(ambientCtx.destination);
+
+    const freqs = [130.81, 164.81, 196.00]; // soft C3-E3-G3 triad
+    ambientNodes = freqs.map((freq, i) => {
+      const osc = ambientCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ambientCtx.createGain();
+      gain.gain.value = 0.16;
+      const lfo = ambientCtx.createOscillator();
+      lfo.frequency.value = 0.07 + i * 0.015;
+      const lfoGain = ambientCtx.createGain();
+      lfoGain.gain.value = 0.05;
+      lfo.connect(lfoGain);
+      lfoGain.connect(gain.gain);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      lfo.start();
+      return { osc, gain, lfo };
+    });
+
+    const now = ambientCtx.currentTime;
+    masterGain.gain.linearRampToValueAtTime(0.5, now + 2);
+    ambientPlaying = true;
+  }
+
+  function toggleAmbient(btn) {
+    if (ambientPlaying) {
+      stopAmbient();
+      btn.textContent = '🎵 Play calming background sound';
+      btn.classList.remove('speaking');
+    } else {
+      startAmbient();
+      btn.textContent = '⏸️ Stop calming background sound';
+      btn.classList.add('speaking');
+    }
+  }
+
   function renderCrystalText(raw) {
     const lines = raw.split('\n');
     let html = '';
@@ -2261,6 +2339,7 @@
       id: 'selfcompassion', label: '3', title: 'Develop Self-Compassion',
       teaching: `<p style="font-style:italic;">"There is no courage without vulnerability." — Brené Brown</p>
       <p>A mindfulness practice can help self-compassion feel less like an idea and more like something you can actually do. <strong>Jon Kabat-Zinn's <em>Wherever You Go, There You Are</em></strong> is a good secular starting point — especially if meditation or stillness got tangled up with performance or fear in your religious background. Mindfulness, in his sense, isn't about clearing your mind or feeling calm — it's paying attention on purpose, to whatever's actually here right now, without judging it. Try this for one minute: notice the weight of your body where you're sitting, one sound around you, and your breath moving — without trying to change any of it. That's the whole practice.</p>
+      <button type="button" class="wb-speak-btn" data-ambient-toggle>🎵 Play calming background sound</button>
       <p><strong>Box breathing</strong> is a fast, body-based way to downshift a panic or fight-or-flight response — four equal counts, repeated 3-5 times:</p>
       <div class="wb-wheel-wrap">
         <svg class="wb-eft-diagram" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
@@ -2600,6 +2679,15 @@
     bodyEl.querySelectorAll('[data-speak-question]').forEach(btn => {
       btn.addEventListener('click', () => toggleSpeak(btn.dataset.speakQuestion, btn));
     });
+
+    const ambientBtn = bodyEl.querySelector('[data-ambient-toggle]');
+    if (ambientBtn) {
+      if (ambientPlaying) {
+        ambientBtn.textContent = '⏸️ Stop calming background sound';
+        ambientBtn.classList.add('speaking');
+      }
+      ambientBtn.addEventListener('click', () => toggleAmbient(ambientBtn));
+    }
 
     bodyEl.querySelectorAll('.wb-field').forEach(field => {
       field.addEventListener('input', (e) => {
