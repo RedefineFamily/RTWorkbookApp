@@ -2705,7 +2705,7 @@
     const step = STEPS[currentStep];
     let html = '';
     if (step.type !== 'intro' && step.type !== 'done') {
-      html += `<div class="wb-step-label">Way ${step.label}</div>`;
+      html += `<div class="wb-step-label">Strategy ${step.label}</div>`;
     }
     html += `<h2 class="wb-title">${step.title}</h2>`;
     html += `<div class="wb-teaching">${step.teaching}</div>`;
@@ -2965,7 +2965,7 @@
       if (step.prompts.length === 0) return;
       html += `<div class="wb-print-section">
         <div class="wb-print-section-header">
-          <span class="wb-print-way-num">Way ${step.label}</span>
+          <span class="wb-print-way-num">Strategy ${step.label}</span>
           <h2>${step.title}</h2>
         </div>`;
 
