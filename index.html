@@ -201,6 +201,10 @@
     border-top: 1px solid var(--border);
   }
 
+  .app-lock { font-size: 12px; margin-left: 4px; opacity: .8; }
+  .app-lock.rf-hidden { display: none !important; }
+  .wb-progress-dot.locked { opacity: .45; cursor: pointer; }
+
   .rf-gate-form {
     display: flex;
     gap: 8px;
@@ -1339,10 +1343,10 @@
     <div class="rf-disclaimer-line">⚠️ This program can make mistakes. Please reach out to a licensed professional for therapeutic support.</div>
   </div>
 
-  <div class="rf-gate" id="rf-gate">
-    <div class="rf-gate-icon">🤝</div>
-    <p class="rf-gate-heading">Get the workbook and chat, $8</p>
-    <p class="rf-gate-copy">A one-time $8 unlocks the interactive chat and the full online workbook, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime.</p>
+  <div class="rf-gate rf-hidden" id="rf-gate">
+    <div class="rf-gate-icon">🔓</div>
+    <p class="rf-gate-heading" id="rf-gate-heading">Unlock the rest of the workbook and the chat, $8</p>
+    <p class="rf-gate-copy" id="rf-gate-copy">Way 1, Acknowledge the Trauma, is free. A one-time $8 opens Ways 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime.</p>
     <a class="rf-gate-buy" id="rf-gate-buy" href="#" target="_blank" rel="noopener">Buy the workbook, $8</a>
     <p class="rf-gate-or">Already bought it? Enter the email you used at checkout.</p>
     <form class="rf-gate-form" id="rf-gate-form">
@@ -1352,14 +1356,14 @@
     <p class="rf-gate-status" id="rf-gate-status"></p>
   </div>
 
-  <div class="rf-hidden" id="app-gated-content">
+  <div id="app-gated-content">
 
   <div class="app-tabs">
-    <button class="app-tab-btn active" data-tab="chat">💬 Chat with Crystal</button>
-    <button class="app-tab-btn" data-tab="workbook">📖 Interactive Workbook</button>
+    <button class="app-tab-btn active" data-tab="workbook">📖 Interactive Workbook</button>
+    <button class="app-tab-btn" data-tab="chat" id="app-tab-chat">💬 Chat with Crystal <span class="app-lock" id="app-tab-chat-lock" title="Unlock for $8">🔒</span></button>
   </div>
 
-  <div class="app-tab-panel active" id="panel-chat">
+  <div class="app-tab-panel" id="panel-chat">
     <div class="rf-progress rf-hidden" id="rf-progress">
     <span class="rf-progress-label">Your journey:</span>
   </div>
@@ -1437,10 +1441,10 @@
   </div>
   </div>
 
-  <div class="app-tab-panel" id="panel-workbook">
+  <div class="app-tab-panel active" id="panel-workbook">
     <div class="wb-subtabs">
       <button class="wb-subtab-btn active" id="wb-subtab-workbook" data-subtab="workbook">📖 Workbook</button>
-      <button class="wb-subtab-btn" id="wb-subtab-practice" data-subtab="practice">🎭 Practice a Conversation</button>
+      <button class="wb-subtab-btn" id="wb-subtab-practice" data-subtab="practice">🎭 Practice a Conversation <span class="app-lock" id="wb-subtab-practice-lock" title="Unlock for $8">🔒</span></button>
     </div>
 
     <div id="wb-view-workbook">
@@ -1554,19 +1558,49 @@
     return localStorage.getItem(EMAIL_STORAGE_KEY) || '';
   }
 
+  // Freemium: Way 1 (Acknowledge the Trauma, workbook steps 1 through 1e) is
+  // free for everyone. Ways 2 to 8, the chat and Practice a Conversation need
+  // a purchase (or a grandfathered free account), checked by the Worker.
+  let hasAccess = false;
+  let pendingAfterUnlock = null; // what the visitor was trying to open
+
+  function applyAccessUI() {
+    document.querySelectorAll('.app-lock').forEach(el => el.classList.toggle('rf-hidden', hasAccess));
+    try { updateProgressBar(); } catch (e) { /* workbook not built yet; applied again at the end of the script */ }
+  }
+
   function unlockApp() {
+    hasAccess = true;
     gateEl.classList.add('rf-hidden');
-    gatedContentEl.classList.remove('rf-hidden');
     rfBodyEl.classList.remove('rf-hidden');
+    applyAccessUI();
+    const next = pendingAfterUnlock; pendingAfterUnlock = null;
+    if (next) next();
   }
 
   function relockApp(message) {
     localStorage.removeItem(EMAIL_STORAGE_KEY);
-    gatedContentEl.classList.add('rf-hidden');
+    hasAccess = false;
     rfBodyEl.classList.add('rf-hidden');
-    gateEl.classList.remove('rf-hidden');
+    applyAccessUI();
+    showGate('chat');
     setGateStatus(message || '', 'error');
   }
+
+  const GATE_COPY = {
+    workbook: ["You've finished the free section", "That was Way 1, Acknowledge the Trauma. A one-time $8 opens Ways 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."],
+    chat: ["Unlock the chat with Crystal, $8", "The chat and Practice a Conversation come with the full workbook. A one-time $8 opens Ways 2 through 8 and the chat, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."]
+  };
+  function showGate(reason, after) {
+    const [h, c] = GATE_COPY[reason] || GATE_COPY.workbook;
+    document.getElementById('rf-gate-heading').textContent = h;
+    document.getElementById('rf-gate-copy').textContent = c;
+    pendingAfterUnlock = after || null;
+    gateEl.classList.remove('rf-hidden');
+    gateEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('rf-gate').insertAdjacentHTML('beforeend', '<button type="button" class="rf-gate-status" id="rf-gate-close" style="background:none;border:none;color:var(--ink-soft);cursor:pointer;text-decoration:underline;padding:0;font-family:inherit;">Not now, keep reading the free section</button>');
+  document.getElementById('rf-gate-close').addEventListener('click', () => { gateEl.classList.add('rf-hidden'); pendingAfterUnlock = null; });
 
   function setGateStatus(message, kind) {
     gateStatusEl.textContent = message;
@@ -1579,7 +1613,7 @@
     if (!email) return;
 
     gateSubmitBtn.disabled = true;
-    setGateStatus('Checking…', 'info');
+    if (!silentGateCheck) setGateStatus('Checking…', 'info');
 
     try {
       const response = await fetch(WORKER_URL, {
@@ -1598,6 +1632,9 @@
         localStorage.setItem(EMAIL_STORAGE_KEY, email);
         setGateStatus('', null);
         unlockApp();
+      } else if (silentGateCheck) {
+        // Arrived from the assessment but hasn't bought: say nothing yet,
+        // the gate appears when they reach the paid part.
       } else if (data.purchased === false) {
         setGateStatus("No purchase found for that email yet. Buy the workbook above with this same email, then come back and tap Unlock.", 'info');
       } else if (data.pending) {
@@ -1619,6 +1656,7 @@
   if (getStoredEmail()) {
     unlockApp();
   }
+  let silentGateCheck = false;
 
   // Hand-off from the assessment (or the Kit form): if the visitor arrived
   // with #email=... (or ?email=...) on this page or on the page embedding it,
@@ -1649,7 +1687,9 @@
     if (handoff) {
       gateEmailEl.value = handoff;
       setBuyLink(handoff);
+      silentGateCheck = true;
       gateFormEl.requestSubmit();
+      setTimeout(() => { silentGateCheck = false; }, 8000);
     }
   }
 
@@ -2613,6 +2653,13 @@
   const nextBtn = document.getElementById('wb-next');
   const resumeBanner = document.getElementById('wb-resume-banner');
 
+  const FREE_STEP_LIMIT = STEPS.findIndex(s => s.id === 'deconstruct'); // first paid step
+  function stepLocked(i) { return !hasAccess && i >= FREE_STEP_LIMIT; }
+  function goToStep(i) {
+    if (stepLocked(i)) { showGate('workbook', () => goToStep(i)); return; }
+    currentStep = i; saveAnswers(); render();
+  }
+
   function buildProgressBar() {
     progressBarEl.innerHTML = '';
     STEPS.forEach((step, i) => {
@@ -2620,7 +2667,7 @@
       dot.className = 'wb-progress-dot';
       dot.textContent = step.label;
       dot.title = step.title;
-      dot.addEventListener('click', () => { currentStep = i; render(); });
+      dot.addEventListener('click', () => goToStep(i));
       progressBarEl.appendChild(dot);
     });
   }
@@ -2646,12 +2693,15 @@
       });
       if (i < currentStep && (step.prompts.length === 0 || stepHasAnswers)) dot.classList.add('done');
       if (i === currentStep) dot.classList.add('current');
+      dot.classList.toggle('locked', stepLocked(i));
+      dot.title = stepLocked(i) ? step.title + ' (unlock for $8)' : step.title;
     });
   }
 
   const EXPAND_TOGGLE_EMOJIS = ['✏️', '📝', '📓', '📄', '🖊️', '📔'];
 
   function render() {
+    if (stepLocked(currentStep)) currentStep = FREE_STEP_LIMIT - 1;
     const step = STEPS[currentStep];
     let html = '';
     if (step.type !== 'intro' && step.type !== 'done') {
@@ -2864,7 +2914,7 @@
     });
 
     prevBtn.disabled = currentStep === 0;
-    nextBtn.textContent = currentStep === STEPS.length - 1 ? 'Finish' : (step.type === 'intro' ? "Let's begin →" : 'Next →');
+    nextBtn.textContent = currentStep === STEPS.length - 1 ? 'Finish' : (step.type === 'intro' ? "Let's begin →" : (stepLocked(currentStep + 1) ? 'Unlock the rest, $8 →' : 'Next →'));
     updateProgressBar();
     bodyEl.scrollTop = 0;
     const scrollTarget = document.getElementById('panel-workbook');
@@ -2881,7 +2931,7 @@
     if (currentStep > 0) { currentStep--; saveAnswers(); render(); }
   });
   nextBtn.addEventListener('click', () => {
-    if (currentStep < STEPS.length - 1) { currentStep++; saveAnswers(); render(); }
+    if (currentStep < STEPS.length - 1) goToStep(currentStep + 1);
   });
 
   document.getElementById('wb-reset-btn').addEventListener('click', () => {
@@ -2998,6 +3048,7 @@
   const tabPanels = document.querySelectorAll('.app-tab-panel');
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.tab === 'chat' && !hasAccess) { showGate('chat', () => btn.click()); return; }
       tabButtons.forEach(b => b.classList.remove('active'));
       tabPanels.forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
@@ -3011,6 +3062,7 @@
   const wbViewPractice = document.getElementById('wb-view-practice');
   wbSubtabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.subtab === 'practice' && !hasAccess) { showGate('chat', () => btn.click()); return; }
       wbSubtabButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const isPractice = btn.dataset.subtab === 'practice';
@@ -3279,6 +3331,9 @@
     updateRpStartBtn();
   });
 
+
+  // Final pass now that every panel exists.
+  applyAccessUI();
 </script>
 
 </body>
