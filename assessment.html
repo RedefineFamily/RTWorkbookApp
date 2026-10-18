@@ -211,7 +211,27 @@
       body: "That is not a verdict on you. It is a sign of what you have carried, often for a long time. Many people who score here find that naming it is the first relief. Support makes a real difference from this point." }
   ];
 
+  const WORKBOOK_URL = "https://redefinefam.com/workbook";
+
   const $ = id => document.getElementById(id);
+
+  // Email hand-off: Kit's form redirect lands here with #email=... (or ?email=...).
+  // Keep it for this visit and pass it on to the workbook so the visitor isn't
+  // asked for it a second time. The fragment never reaches a server log.
+  function readHandoffEmail() {
+    const sources = [];
+    try { sources.push(location.hash.slice(1), location.search.slice(1)); } catch (e) {}
+    for (const s of sources) {
+      const v = new URLSearchParams(s).get('email');
+      if (v && v.includes('@')) return v.trim().toLowerCase();
+    }
+    try { return sessionStorage.getItem('rf_handoff_email') || ''; } catch (e) { return ''; }
+  }
+  const handoffEmail = readHandoffEmail();
+  if (handoffEmail) {
+    try { sessionStorage.setItem('rf_handoff_email', handoffEmail); } catch (e) {}
+    $('btn-workbook').href = WORKBOOK_URL + '#email=' + encodeURIComponent(handoffEmail);
+  }
   const screens = { welcome: $('screen-welcome'), question: $('screen-question'), result: $('screen-result') };
   let answers = [];
   let index = 0;

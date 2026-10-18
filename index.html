@@ -1588,6 +1588,30 @@
     unlockApp();
   }
 
+  // Hand-off from the assessment (or the Kit form): if the visitor arrived
+  // with #email=... (or ?email=...) on this page or on the page embedding it,
+  // fill the gate and submit it for them so they don't type it twice. The
+  // Worker still does the real verification. Reading parent.location only
+  // works when this page is embedded as srcdoc (same origin); otherwise it
+  // throws and is ignored.
+  function findHandoffEmail() {
+    const sources = [];
+    try { sources.push(location.hash.slice(1), location.search.slice(1)); } catch (e) {}
+    try { sources.push(window.parent.location.hash.slice(1), window.parent.location.search.slice(1)); } catch (e) {}
+    for (const s of sources) {
+      const v = new URLSearchParams(s).get('email');
+      if (v && v.includes('@')) return v.trim().toLowerCase();
+    }
+    return '';
+  }
+  if (!getStoredEmail()) {
+    const handoff = findHandoffEmail();
+    if (handoff) {
+      gateEmailEl.value = handoff;
+      gateFormEl.requestSubmit();
+    }
+  }
+
   // ---- 8 Ways progress tracker ----
   const EIGHT_WAYS = [
     { id: 'acknowledge', emoji: '🌊', label: 'Acknowledge the Trauma', keywords: ['acknowledge', 'trauma', 'what happened to you', 'what you went through'] },
