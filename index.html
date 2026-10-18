@@ -1346,7 +1346,7 @@
   <div class="rf-gate rf-hidden" id="rf-gate">
     <div class="rf-gate-icon">🔓</div>
     <p class="rf-gate-heading" id="rf-gate-heading">Unlock the rest of the workbook and the chat, $8</p>
-    <p class="rf-gate-copy" id="rf-gate-copy">Way 1, Acknowledge the Trauma, is free. A one-time $8 opens Ways 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime.</p>
+    <p class="rf-gate-copy" id="rf-gate-copy">Strategy 1, Acknowledge the Trauma, is free. A one-time $8 opens Strategies 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime.</p>
     <a class="rf-gate-buy" id="rf-gate-buy" href="#" target="_blank" rel="noopener">Buy the workbook, $8</a>
     <p class="rf-gate-or">Already bought it? Enter the email you used at checkout.</p>
     <form class="rf-gate-form" id="rf-gate-form">
@@ -1520,7 +1520,7 @@
   const WORKER_URL = "https://religioustrauma.crystal-170.workers.dev/";
   // Kit product checkout for the $8 workbook. Paste the product's share URL
   // from Kit (Commerce > Products) here.
-  const KIT_PRODUCT_URL = "https://redefine-family.kit.com/products/workbook";
+  const KIT_PRODUCT_URL = "https://redefine-family.kit.com/products/religious-trauma-recovery-workbook";
   // -------------------------
 
   const step1El = document.getElementById('rf-step1');
@@ -1588,8 +1588,8 @@
   }
 
   const GATE_COPY = {
-    workbook: ["You've finished the free section", "That was Way 1, Acknowledge the Trauma. A one-time $8 opens Ways 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."],
-    chat: ["Unlock the chat with Crystal, $8", "The chat and Practice a Conversation come with the full workbook. A one-time $8 opens Ways 2 through 8 and the chat, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."]
+    workbook: ["You've finished the free section", "That was Strategy 1, Acknowledge the Trauma. A one-time $8 opens Strategies 2 through 8 and the chat with Crystal, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."],
+    chat: ["Unlock the chat with Crystal, $8", "The chat and Practice a Conversation come with the full workbook. A one-time $8 opens Strategies 2 through 8 and the chat, yours to use privately whenever something comes up. This is peer mentoring, not therapy. Checkout is handled by Kit; you'll also get occasional updates from Redefine Family, and you can unsubscribe anytime."]
   };
   function showGate(reason, after) {
     const [h, c] = GATE_COPY[reason] || GATE_COPY.workbook;
